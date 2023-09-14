@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/yuzheyang/Library/Mobile Documents/3L68KQB4HG~com~readdle~CommonDocuments/Documents/CUHKSZ/CSC/CSC3050/CSC3050_P1",
+      "program": "/Users/yuzheyang/Library/Mobile Documents/3L68KQB4HG~com~readdle~CommonDocuments/Documents/CUHKSZ/CSC/CSC3050/CSC3050_P1/build/Debug/outDebug"
+    }
+  ]
+}

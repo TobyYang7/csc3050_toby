@@ -1,8 +1,11 @@
 import functions as f
+import labelTable as m
 
 file = "csc3050_toby/CSC3050_P1/testfile3.asm"
 text, label_dict = f.pre_process(file)
 
 
-a = '123456789'
-print(a[0:6])
+a = 0b00010000000000000000000000
+b = 0b00000100000000000000000000
+
+print(0b100000-0b1000)

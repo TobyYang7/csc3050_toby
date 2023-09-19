@@ -1,5 +1,5 @@
 import functions as f
-import MIPS_table as m
+import labelTable as m
 
 
 file = "csc3050_toby/CSC3050_P1/testfile2.asm"
@@ -75,10 +75,10 @@ for line in text.split('\n'):
     # translate(type_num, inst, reg, address, imm, label)
     MIPS_element = f.translate(
         type_num, m.MIPS_instruction_table[instruction], registers, address, imm, label, counter)
+
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
     # todo: test
-    print(counter, instruction, imm)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:

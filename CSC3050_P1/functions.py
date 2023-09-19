@@ -1,4 +1,4 @@
-import MIPS_table as m
+import labelTable as m
 
 
 def print_file(file):
@@ -70,7 +70,7 @@ def find_labels(text):
         if ":" in line:
             label = line[:line.index(":")]
             labels[label] = contents.index(line)
-            labels[label] = counter * 4
+            labels[label] = counter
         else:
             counter += 1
     return labels
@@ -101,15 +101,16 @@ def translate(type_num, inst, reg, address, imm, label, current):
             return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": reg[2], "function": inst["function"]}
         case 6:
             # xxx rs, rt, label
-            print(label/4, current)
-            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(-label+current*4)}
+            # print(int(label-current))
+            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
         case 7:
             # xxx rs, label
-            return {"opcode": inst["opcode"], "rs": reg[0], "imm": label, "function": inst["function"]}
+            # fix
+            return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(-label+current*4), "function": inst["function"]}
         case 8:
             # xxx label
-            print(label/4, current)
-            return {"opcode": inst["opcode"], "imm": int(-label+current*4)}
+            print(current, label, int(-label+0x400000))  # fix
+            return {"opcode": inst["opcode"], "imm": int(-label+0x400000)}
         case 9:
             # xxx rs
             return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}

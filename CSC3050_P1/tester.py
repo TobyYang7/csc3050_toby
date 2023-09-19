@@ -16,7 +16,7 @@ with open("tem_file.txt", 'w') as file_object:
 os.system("python csc3050_toby/CSC3050_P1/phase2.py")
 
 
-# read and store the content in the output file and expected outputfile seperately
+# read and store the content in the output file and expected output file separately
 with open(output_file, "r") as file_object:
     output_lines = file_object.readlines()
 with open(expectedoutput_file, "r") as file_object:

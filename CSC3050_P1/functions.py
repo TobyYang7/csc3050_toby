@@ -103,14 +103,14 @@ def translate(type_num, inst, reg, address, imm, label, current):
             # xxx rs, rt, label
             # print(int(label-current))
             return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
-        case 7:
+        case 7:  # fix: check
             # xxx rs, label
-            # fix
-            return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(-label+current*4), "function": inst["function"]}
-        case 8:
+            imm = int(-label+0x400000) >> 2
+            return {"opcode": inst["opcode"], "rs": reg[0], "imm": imm,  "function": inst["function"]}
+        case 8:  # fix: check
             # xxx label
-            print(current, label, int(-label+0x400000))  # fix
-            return {"opcode": inst["opcode"], "imm": int(-label+0x400000)}
+            imm = int(-label+0x400000) >> 2
+            return {"opcode": inst["opcode"], "imm": imm}
         case 9:
             # xxx rs
             return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}

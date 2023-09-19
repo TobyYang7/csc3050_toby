@@ -5,8 +5,8 @@ import labelTable as m
 file = "csc3050_toby/CSC3050_P1/testfile2.asm"
 text, label_dict = f.pre_process(file)
 
-# todo: text
-# print(text)
+# todo: test
+f.print_file(file)
 
 counter = 0
 machine_code = []
@@ -79,6 +79,7 @@ for line in text.split('\n'):
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
     # todo: test
+    print(counter, instruction, instr_type)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:
@@ -142,6 +143,7 @@ for line in text.split('\n'):
                         else:
                             machine_code_line[6:
                                               32] = f"{int(MIPS_element[code]):026b}"
+            print(f.list_to_string(machine_code_line))
 
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')

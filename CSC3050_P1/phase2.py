@@ -2,11 +2,12 @@ import functions as f
 import labelTable as m
 
 
-file = "csc3050_toby/CSC3050_P1/testfile.asm"
+file = "csc3050_toby/CSC3050_P1/testfile3.asm"
 text, label_dict = f.pre_process(file)
 
 # todo: test
 # f.print_file(file)
+print(text)
 
 counter = 0
 machine_code = []
@@ -71,6 +72,9 @@ for line in text.split('\n'):
     if elements[-1] in label_dict:
         label = label_dict[elements[-1]]
 
+    # todo: test translate function
+    print(counter, type_num, instruction, registers, address, imm, label)
+
     # divide MIPS code into different types
     # translate(type_num, inst, reg, address, imm, label)
     MIPS_element = f.translate(
@@ -79,7 +83,7 @@ for line in text.split('\n'):
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
     # todo: test
-    # print(counter, instruction, instr_type)
+    # print(counter, instruction, instr_type, imm, registers, address)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:
@@ -110,6 +114,7 @@ for line in text.split('\n'):
 
         case "I":
             # I_type = {"opcode", "rs", "rt", "imm"}
+            print(MIPS_element)
             for code in m.I_type:
                 match code:
                     case "opcode":
@@ -143,7 +148,7 @@ for line in text.split('\n'):
                         else:
                             machine_code_line[6:
                                               32] = f"{int(MIPS_element[code]):026b}"
-
+    # print(MIPS_element)
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')
 

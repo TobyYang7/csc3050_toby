@@ -1,6 +1,6 @@
 R:	add $s0, $s1, $s2	
 	add $s0, $s1, $s2
-	sub s0, $s1, $s2  
+	sub $s0, $s1, $s2  
 	subu $s0, $s1, $s2
 	and $s0, $s1, $s2
 	or $s0, $s1, $s2    
@@ -29,10 +29,10 @@ I: addi $s0, $s1, -100
 	ori $s0, $s1, 100
 	slti $s0, $s1, 100
 	sltiu $s0, $s1, 100
-	beq $s0, $s1, I
+	beq $s0, $s1, I           #s f s
 	bne $s0, $s1, R
 	bgez $s0, I
 	bltz $s1, I 
 	lw $s0, 100($s1)	
 	sw $s0, 100($s1)	
-	lui $s0, 100	
+	lui $s0, 100	   

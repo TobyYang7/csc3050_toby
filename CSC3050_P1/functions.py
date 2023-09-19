@@ -45,7 +45,7 @@ def rm_labels(text):
             parts = line.split(':', 1)
             if len(parts) == 1:
                 # If there is no colon, add the entire line without leading spaces
-                new_contents.append(line.lstrip())
+                new_contents.append(line.strip())
             else:
                 # If there is a colon, add only the code part without leading spaces
                 new_contents.append(parts[1].strip())
@@ -96,21 +96,21 @@ def translate(type_num, inst, reg, address, imm, label, current):
         case 4:
             # xxx rs, rt
             return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "function": inst["function"]}
-        case 5:
+        case 5:  # fix: sa
             # xxx rd, rt, sa
-            return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": reg[2], "function": inst["function"]}
+            return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": imm, "function": inst["function"]}
         case 6:
             # xxx rs, rt, label
-            # print(int(label-current))
+            # branch
             return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
         case 7:  # fix: check
             # xxx rs, label
-            imm = int(-label+0x400000) >> 2
-            return {"opcode": inst["opcode"], "rs": reg[0], "imm": imm,  "function": inst["function"]}
+            num = int(-label+0x400000) >> 2
+            return {"opcode": inst["opcode"], "rs": reg[0], "imm": num}
         case 8:  # fix: check
             # xxx label
-            imm = int(-label+0x400000) >> 2
-            return {"opcode": inst["opcode"], "imm": imm}
+            num = int(-label+0x400000) >> 2
+            return {"opcode": inst["opcode"], "imm": num}
         case 9:
             # xxx rs
             return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}

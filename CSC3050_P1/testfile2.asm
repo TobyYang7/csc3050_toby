@@ -1,6 +1,6 @@
 .text
 fibonacci:
-addi $sp, $sp, -12
+addi $sp, $sp, -12   
 sw $ra, 8($sp)
 sw $s0, 4($sp)
 sw $s1, 0($sp)

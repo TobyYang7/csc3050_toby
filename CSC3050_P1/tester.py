@@ -15,6 +15,7 @@ with open("tem_file.txt", 'w') as file_object:
 # conduct phase2.py to do compiling
 os.system("python phase2.py")
 
+
 # read and store the content in the output file and expected outputfile seperately
 with open(output_file, "r") as file_object:
     output_lines = file_object.readlines()

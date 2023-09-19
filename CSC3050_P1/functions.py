@@ -1,19 +1,6 @@
 import MIPS_table as m
 
 
-def test_machine_code():
-    expected_output_file = input(
-        "Enter the path to the expected output file: ")
-    with open(expected_output_file, 'r') as f:
-        expected_output = f.readlines()
-
-    actual_output_file = input("Enter the path to the actual output file: ")
-    with open(actual_output_file, 'r') as f:
-        actual_output = f.readlines()
-
-    assert expected_output == actual_output
-
-
 def print_file(file):
     with open(file, 'r') as file:
         contents = file.read()
@@ -93,7 +80,7 @@ def list_to_string(lst):
     return ''.join(str(e) for e in lst)
 
 
-def translate(type_num, inst, reg, address, imm, label):
+def translate(type_num, inst, reg, address, imm, label, current):
     # reg[], address["reg"], address["imm"]
     # inst["opcode"], inst["function"]
     match type_num:
@@ -114,13 +101,15 @@ def translate(type_num, inst, reg, address, imm, label):
             return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": reg[2], "function": inst["function"]}
         case 6:
             # xxx rs, rt, label
-            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": label}
+            print(label/4, current)
+            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(-label+current*4)}
         case 7:
             # xxx rs, label
             return {"opcode": inst["opcode"], "rs": reg[0], "imm": label, "function": inst["function"]}
         case 8:
             # xxx label
-            return {"opcode": inst["opcode"], "imm": label}
+            print(label/4, current)
+            return {"opcode": inst["opcode"], "imm": int(-label+current*4)}
         case 9:
             # xxx rs
             return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}

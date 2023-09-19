@@ -13,7 +13,7 @@ with open("tem_file.txt", 'w') as file_object:
     file_object.write(test_file+' '+output_file)
 
 # conduct phase2.py to do compiling
-os.system("python phase2.py")
+os.system("python csc3050_toby/CSC3050_P1/phase2.py")
 
 
 # read and store the content in the output file and expected outputfile seperately

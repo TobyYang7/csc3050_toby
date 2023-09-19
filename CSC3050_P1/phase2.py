@@ -2,7 +2,7 @@ import functions as f
 import MIPS_table as m
 
 
-file = "csc3050_toby/CSC3050_P1/testfile.asm"
+file = "csc3050_toby/CSC3050_P1/testfile2.asm"
 text, label_dict = f.pre_process(file)
 
 # todo: text
@@ -74,11 +74,11 @@ for line in text.split('\n'):
     # divide MIPS code into different types
     # translate(type_num, inst, reg, address, imm, label)
     MIPS_element = f.translate(
-        type_num, m.MIPS_instruction_table[instruction], registers, address, imm, label)
+        type_num, m.MIPS_instruction_table[instruction], registers, address, imm, label, counter)
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
-    # todo:test
-    # print(counter, type_num, instruction)
+    # todo: test
+    print(counter, instruction, imm)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:
@@ -148,3 +148,5 @@ for line in text.split('\n'):
 
 
 machine_code = f.list_to_string(machine_code)
+with open('csc3050_toby/CSC3050_P1/machine_code.txt', 'w') as file:
+    file.write(machine_code)

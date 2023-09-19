@@ -44,7 +44,6 @@ MIPS_instruction_table = {
     "andi": {"type": "I", "opcode": 0x0c},
     "beq": {"type": "I", "opcode": 0x04},
     "bgez": {"type": "I", "opcode": 0x01, "rt": 0x01},
-    "bgezal": {"type": "I", "opcode": 0x01, "rt": 0x11},
     "bgtz": {"type": "I", "opcode": 0x07, "rt": 0x00},
     "blez": {"type": "I", "opcode": 0x06, "rt": 0x00},
     "bltz": {"type": "I", "opcode": 0x01, "rt": 0x00},

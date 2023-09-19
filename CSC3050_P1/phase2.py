@@ -2,7 +2,7 @@ import functions as f
 import labelTable as m
 
 
-file = "csc3050_toby/CSC3050_P1/testfile3.asm"
+file = "CSC3050_P1/testfile3.asm"
 text, label_dict = f.pre_process(file)
 
 # todo: test
@@ -128,6 +128,7 @@ for line in text.split('\n'):
                                               16] = f"{int(MIPS_element[code]):05b}"
                     case "imm":
                         if "imm" in MIPS_element:
+                            print(MIPS_element[code])
                             if int(MIPS_element[code]) < 0:
                                 # Convert negative number to 16-bit two's complement
                                 machine_code_line[16:32] = f"{(1 << 16) + int(MIPS_element[code]):016b}"
@@ -149,10 +150,11 @@ for line in text.split('\n'):
                             machine_code_line[6:
                                               32] = f"{int(MIPS_element[code]):026b}"
     # print(MIPS_element)
+    print(f.list_to_string(machine_code_line))
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')
 
 
 machine_code = f.list_to_string(machine_code)
-with open('csc3050_toby/CSC3050_P1/machine_code.txt', 'w') as file:
+with open('machine_code.txt', 'w') as file:
     file.write(machine_code)

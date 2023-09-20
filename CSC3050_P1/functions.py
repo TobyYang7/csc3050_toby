@@ -1,4 +1,5 @@
 import labelTable as m
+START_ADDRESS = 0x00000
 
 
 def print_file(file):
@@ -68,13 +69,14 @@ def find_labels(text):
     contents = text.split('\n')
     counter = 0
     for line in contents:
-        line = line.strip('')
+        line = line.strip()
         if '.text' in line:
             continue
         if ":" in line:
             label = line[:line.index(":")]
-            labels[label] = contents.index(line)
             labels[label] = counter
+            if line[line.index(":")+1:].strip() != "":
+                counter += 1
         else:
             counter += 1
     return labels
@@ -123,7 +125,7 @@ def translate(type_num, inst, reg, address, imm, label, current):
             return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(label-current)}
         case 8:  # fix: check
             # xxx label
-            address = 0x400000 + label*4
+            address = START_ADDRESS + label*4
             num = Jtype_drop(address)
             return {"opcode": inst["opcode"], "imm": num}
         case 9:

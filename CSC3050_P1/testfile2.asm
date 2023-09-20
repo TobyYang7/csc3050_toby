@@ -1,6 +1,6 @@
 .text
 fibonacci:
-addi $sp, $sp, -12   
+addi $sp, $sp, -12  # 0x400000
 sw $ra, 8($sp)
 sw $s0, 4($sp)
 sw $s1, 0($sp)
@@ -15,8 +15,12 @@ addi $a0, $s0, -2
 jal fibonacci
 add $v0, $s1, $v0
 fibonacciExit:
-lw $ra, 8($sp)
+lw $ra, 8($sp)  # 0x400000 + offset*4
 lw $s0, 4($sp)
 lw $s1, 0($sp)
 addi $sp, $sp, 12
 jr $ra
+
+
+
+

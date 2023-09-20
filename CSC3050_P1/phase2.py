@@ -2,7 +2,7 @@ import functions as f
 import labelTable as m
 
 
-file = "CSC3050_P1/testfile3.asm"
+file = "testfile3.asm"
 text, label_dict = f.pre_process(file)
 
 # todo: test
@@ -68,22 +68,23 @@ for line in text.split('\n'):
             break
 
     # label detection
-    label = None
+    label_address = None
     if elements[-1] in label_dict:
-        label = label_dict[elements[-1]]
+        label_address = label_dict[elements[-1]]
 
     # todo: test translate function
-    print(counter, type_num, instruction, registers, address, imm, label)
+    # print(counter, type_num, instruction,
+    #       registers, address, imm, label_address)
 
     # divide MIPS code into different types
     # translate(type_num, inst, reg, address, imm, label)
     MIPS_element = f.translate(
-        type_num, m.MIPS_instruction_table[instruction], registers, address, imm, label, counter)
+        type_num, m.MIPS_instruction_table[instruction], registers, address, imm, label_address, counter)
 
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
     # todo: test
-    # print(counter, instruction, instr_type, imm, registers, address)
+    print(counter, instruction, type_num, registers)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:
@@ -114,7 +115,7 @@ for line in text.split('\n'):
 
         case "I":
             # I_type = {"opcode", "rs", "rt", "imm"}
-            print(MIPS_element)
+            # print(MIPS_element)
             for code in m.I_type:
                 match code:
                     case "opcode":
@@ -128,7 +129,6 @@ for line in text.split('\n'):
                                               16] = f"{int(MIPS_element[code]):05b}"
                     case "imm":
                         if "imm" in MIPS_element:
-                            print(MIPS_element[code])
                             if int(MIPS_element[code]) < 0:
                                 # Convert negative number to 16-bit two's complement
                                 machine_code_line[16:32] = f"{(1 << 16) + int(MIPS_element[code]):016b}"
@@ -147,10 +147,14 @@ for line in text.split('\n'):
                             # Convert negative number to 16-bit two's complement
                             machine_code_line[6:32] = f"{(1 << 16) + int(MIPS_element[code]):026b}"
                         else:
+                            print('-------')
+                            print(f"{int(MIPS_element[code]):026b}")
                             machine_code_line[6:
                                               32] = f"{int(MIPS_element[code]):026b}"
+                            print(bin(int(MIPS_element[code])))
+                            print('-------')
     # print(MIPS_element)
-    print(f.list_to_string(machine_code_line))
+    # print(f.list_to_string(machine_code_line))
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')
 

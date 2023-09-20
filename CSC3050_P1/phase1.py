@@ -1,7 +1,8 @@
 import functions as f
 import labelTable as m
 
-file = "csc3050_toby/CSC3050_P1/testfile.asm"
+file = "testfile2.asm"
 text, label_dict = f.pre_process(file)
-
+for label in label_dict:
+    print(label)
 print(text)

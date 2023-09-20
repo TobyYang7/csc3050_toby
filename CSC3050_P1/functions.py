@@ -54,8 +54,12 @@ def rm_labels(text):
 
 # load the .text section
 def load_text(text):
-    # todo: return .text section
-    return text
+    start_index = text.find('.text')
+    end_index = text.find('.data')
+    if start_index == -1:
+        return text
+    else:
+        return text[start_index:end_index]
 
 
 # find all the labels and their addresses
@@ -78,6 +82,16 @@ def find_labels(text):
 
 def list_to_string(lst):
     return ''.join(str(e) for e in lst)
+
+
+def Jtype_drop(num):
+    # Convert num to 32-bit binary string
+    binary_str = format(num, '032b')
+    # Drop upper 4 bits and lower 2 bits
+    binary_str = binary_str[4:-2]
+    # Convert binary string to integer
+    result = int(binary_str, 2)
+    return result
 
 
 def translate(type_num, inst, reg, address, imm, label, current):
@@ -105,11 +119,12 @@ def translate(type_num, inst, reg, address, imm, label, current):
             return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
         case 7:  # fix: check
             # xxx rs, label
-            num = int(-label+0x400000) >> 2
-            return {"opcode": inst["opcode"], "rs": reg[0], "imm": num}
+            # branch
+            return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(label-current)}
         case 8:  # fix: check
             # xxx label
-            num = int(-label+0x400000) >> 2
+            address = 0x400000 + label*4
+            num = Jtype_drop(address)
             return {"opcode": inst["opcode"], "imm": num}
         case 9:
             # xxx rs

@@ -1,0 +1,3 @@
+**How to run this program**
+1. cd into CSC3050_P!
+2. python tester.py <testfile name> <output file name> <expected output file name>

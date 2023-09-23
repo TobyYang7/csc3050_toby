@@ -1,1 +1,1 @@
-testfile2.asm output.txt
+testfile3.asm output3.txt

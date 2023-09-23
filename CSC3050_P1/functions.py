@@ -1,5 +1,5 @@
 import labelTable as m
-START_ADDRESS = 0x00000
+START_ADDRESS = 0x400000
 
 
 def print_file(file):

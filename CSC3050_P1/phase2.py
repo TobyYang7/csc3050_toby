@@ -2,9 +2,9 @@ import functions as f
 import labelTable as m
 import sys
 
-
-sys.argv = ["phase2.py", "testfile3.asm"]
-file = "testfile2.asm"
+file = sys.argv[1]
+output_file = sys.argv[2]
+print(file, output_file)
 text, label_dict = f.pre_process(file)
 
 # todo: test
@@ -152,5 +152,5 @@ for line in text.split('\n'):
 
 
 machine_code = f.list_to_string(machine_code)
-with open('machine_code.txt', 'w') as file:
+with open(str(output_file), 'w') as file:
     file.write(machine_code)

@@ -26,7 +26,7 @@ I:	addi $s0, $s1, -100	#i instructions
 	ori $s0, $s1, 100
 	slti $s0, $s1, 100
 	sltiu $s0, $s1, 100
-	beq $s0, $s1, I
+	beq $s0, $s1, I #fix
 	bne $s0, $s1, R
 	bgez $s0, I
 	bltz $s1, I

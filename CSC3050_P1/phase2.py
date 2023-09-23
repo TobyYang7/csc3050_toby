@@ -1,13 +1,13 @@
 import functions as f
 import labelTable as m
+import sys
 
 
-file = "testfile3.asm"
+sys.argv = ["phase2.py", "testfile3.asm"]
+file = "testfile2.asm"
 text, label_dict = f.pre_process(file)
 
 # todo: test
-# f.print_file(file)
-print(text)
 
 counter = 0
 machine_code = []
@@ -73,8 +73,6 @@ for line in text.split('\n'):
         label_address = label_dict[elements[-1]]
 
     # todo: test translate function
-    # print(counter, type_num, instruction,
-    #       registers, address, imm, label_address)
 
     # divide MIPS code into different types
     # translate(type_num, inst, reg, address, imm, label)
@@ -84,7 +82,6 @@ for line in text.split('\n'):
     instr_type = m.MIPS_instruction_table[instruction]["type"]
 
     # todo: test
-    print(counter, instruction, type_num, registers)
 
     machine_code_line = [0]*32  # 32 bits
     match instr_type:
@@ -147,13 +144,8 @@ for line in text.split('\n'):
                             # Convert negative number to 16-bit two's complement
                             machine_code_line[6:32] = f"{(1 << 16) + int(MIPS_element[code]):026b}"
                         else:
-                            print('-------')
-                            print(f"{int(MIPS_element[code]):026b}")
                             machine_code_line[6:
                                               32] = f"{int(MIPS_element[code]):026b}"
-                            print(bin(int(MIPS_element[code])))
-                            print('-------')
-    # print(MIPS_element)
     # print(f.list_to_string(machine_code_line))
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')

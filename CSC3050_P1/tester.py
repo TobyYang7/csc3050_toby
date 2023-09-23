@@ -4,7 +4,8 @@ import os
 test_file = input("Please enter the test file name:")
 while not os.path.exists(test_file):
     test_file = input("Your input is wrong, please enter the correct name:")
-output_file = input("Please enter the output file name:")
+# output_file = input("Please enter the output file name:")
+output_file = "machine_code.txt"
 expectedoutput_file = input("Please enter the expected output file name:")
 while not os.path.exists(expectedoutput_file):
     expectedoutput_file = input(
@@ -13,7 +14,7 @@ with open("tem_file.txt", 'w') as file_object:
     file_object.write(test_file+' '+output_file)
 
 # conduct phase2.py to do compiling
-os.system("python csc3050_toby/CSC3050_P1/phase2.py")
+os.system("python phase2.py")
 
 # read and store the content in the output file and expected output file separately
 with open(output_file, "r") as file_object:

@@ -7,3 +7,7 @@ loop:	slt $t2, $a0, $t1		# top of loop
 	addi $t1, $t1, 2
 	j loop				# bottom of loop
 finish:	add $v0, $t0, $zero
+
+# bne
+# 000101 01010 00000 0000000000001000
+# 000101 01010 00000 0000000000000011

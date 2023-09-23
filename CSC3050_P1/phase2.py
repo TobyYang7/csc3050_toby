@@ -4,7 +4,6 @@ import sys
 
 file = sys.argv[1]
 output_file = sys.argv[2]
-print(file, output_file)
 text, label_dict = f.pre_process(file)
 
 # todo: test

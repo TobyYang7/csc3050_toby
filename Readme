@@ -1,3 +1,5 @@
-How to run this Assignment:
-1. cd into CSC3050_P!
+***How to run this Assignment:***
+1. cd into CSC3050_P1
 2. python tester.py <testfile name> <output file name> <expected output file name>
+
+***How to check the results:***

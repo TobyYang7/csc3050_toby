@@ -136,6 +136,7 @@ for line in text.split('\n'):
                 else:
                     machine_code_line[6:32] = f"{int(MIPS_element[code]):026b}"
     # print(f.list_to_string(machine_code_line))
+    machine_code = list(machine_code)
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')
 

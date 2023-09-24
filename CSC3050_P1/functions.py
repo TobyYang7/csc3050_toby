@@ -99,44 +99,43 @@ def Jtype_drop(num):
 def translate(type_num, inst, reg, address, imm, label, current):
     # reg[], address["reg"], address["imm"]
     # inst["opcode"], inst["function"]
-    match type_num:
-        case 1:
-            # xxx rd, rs, rt
-            return {"opcode": inst["opcode"], "rd": reg[0], "rs": reg[1], "rt": reg[2], "function": inst["function"]}
-        case 2:
-            # xxx rt, rs, imm
-            return {"opcode": inst["opcode"], "rt": reg[0], "rs": reg[1], "imm": imm}
-        case 3:
-            # xxx rd, rs
-            return {"opcode": inst["opcode"], "rd": reg[0], "rs": reg[1], "function": inst["function"]}
-        case 4:
-            # xxx rs, rt
-            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "function": inst["function"]}
-        case 5:  # fix: sa
-            # xxx rd, rt, sa
-            return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": imm, "function": inst["function"]}
-        case 6:
-            # xxx rs, rt, label
-            # branch
-            return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
-        case 7:  # fix: check
-            # xxx rs, label
-            # branch
-            return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(label-current)}
-        case 8:  # fix: check
-            # xxx label
-            address = START_ADDRESS + label*4
-            num = Jtype_drop(address)
-            return {"opcode": inst["opcode"], "imm": num}
-        case 9:
-            # xxx rs
-            return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}
-        case 10:
-            # xxx rd
-            return {"opcode": inst["opcode"], "rd": reg[0], "function": inst["function"]}
-        case 11:
-            # xxx rt, address
-            return {"opcode": inst["opcode"], "rt": reg[0], "rs": address["reg"], "imm": address["imm"]}
-        case 12:
-            # xxx rt, imm
-            return {"opcode": inst["opcode"], "rt": reg[0], "imm": imm}
+    if type_num == 1:
+        # xxx rd, rs, rt
+        return {"opcode": inst["opcode"], "rd": reg[0], "rs": reg[1], "rt": reg[2], "function": inst["function"]}
+    elif type_num == 2:
+        # xxx rt, rs, imm
+        return {"opcode": inst["opcode"], "rt": reg[0], "rs": reg[1], "imm": imm}
+    elif type_num == 3:
+        # xxx rd, rs
+        return {"opcode": inst["opcode"], "rd": reg[0], "rs": reg[1], "function": inst["function"]}
+    elif type_num == 4:
+        # xxx rs, rt
+        return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "function": inst["function"]}
+    elif type_num == 5:  # fix: sa
+        # xxx rd, rt, sa
+        return {"opcode": inst["opcode"], "rd": reg[0], "rt": reg[1], "sa": imm, "function": inst["function"]}
+    elif type_num == 6:
+        # xxx rs, rt, label
+        # branch
+        return {"opcode": inst["opcode"], "rs": reg[0], "rt": reg[1], "imm": int(label-current)}
+    elif type_num == 7:  # fix: check
+        # xxx rs, label
+        # branch
+        return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(label-current)}
+    elif type_num == 8:  # fix: check
+        # xxx label
+        address = START_ADDRESS + label*4
+        num = Jtype_drop(address)
+        return {"opcode": inst["opcode"], "imm": num}
+    elif type_num == 9:
+        # xxx rs
+        return {"opcode": inst["opcode"], "rs": reg[0], "function": inst["function"]}
+    elif type_num == 10:
+        # xxx rd
+        return {"opcode": inst["opcode"], "rd": reg[0], "function": inst["function"]}
+    elif type_num == 11:
+        # xxx rt, address
+        return {"opcode": inst["opcode"], "rt": reg[0], "rs": address["reg"], "imm": address["imm"]}
+    elif type_num == 12:
+        # xxx rt, imm
+        return {"opcode": inst["opcode"], "rt": reg[0], "imm": imm}

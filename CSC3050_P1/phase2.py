@@ -83,73 +83,62 @@ for line in text.split('\n'):
     # todo: test
 
     machine_code_line = [0]*32  # 32 bits
-    match instr_type:
-        case "R":
-            # R_type = {"opcode", "rs", "rt", "rd", "sa", "function"}
-            for code in m.R_type:
-                match code:
-                    case "opcode":
-                        machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
-                    case "rs":
-                        if "rs" in MIPS_element:
-                            machine_code_line[6:11] = f"{int(MIPS_element[code]):05b}"
-                    case "rt":
-                        if "rt" in MIPS_element:
-                            machine_code_line[11:
-                                              16] = f"{int(MIPS_element[code]):05b}"
-                    case "rd":
-                        if "rd" in MIPS_element:
-                            machine_code_line[16:
-                                              21] = f"{int(MIPS_element[code]):05b}"
-                    case "sa":
-                        if "sa" in MIPS_element:
-                            machine_code_line[21:
-                                              26] = f"{int(MIPS_element[code]):05b}"
-                    case "function":
-                        machine_code_line[26:
-                                          32] = f"{int(MIPS_element[code]):06b}"
+    if instr_type == "R":
+        # R_type = {"opcode", "rs", "rt", "rd", "sa", "function"}
+        for code in m.R_type:
+            if code == "opcode":
+                machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
+            elif code == "rs":
+                if "rs" in MIPS_element:
+                    machine_code_line[6:11] = f"{int(MIPS_element[code]):05b}"
+            elif code == "rt":
+                if "rt" in MIPS_element:
+                    machine_code_line[11:16] = f"{int(MIPS_element[code]):05b}"
+            elif code == "rd":
+                if "rd" in MIPS_element:
+                    machine_code_line[16:21] = f"{int(MIPS_element[code]):05b}"
+            elif code == "sa":
+                if "sa" in MIPS_element:
+                    machine_code_line[21:26] = f"{int(MIPS_element[code]):05b}"
+            elif code == "function":
+                machine_code_line[26:32] = f"{int(MIPS_element[code]):06b}"
 
-        case "I":
-            # I_type = {"opcode", "rs", "rt", "imm"}
-            # print(MIPS_element)
-            for code in m.I_type:
-                match code:
-                    case "opcode":
-                        machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
-                    case "rs":
-                        if "rs" in MIPS_element:
-                            machine_code_line[6:11] = f"{int(MIPS_element[code]):05b}"
-                    case "rt":
-                        if "rt" in MIPS_element:
-                            machine_code_line[11:
-                                              16] = f"{int(MIPS_element[code]):05b}"
-                    case "imm":
-                        if "imm" in MIPS_element:
-                            if int(MIPS_element[code]) < 0:
-                                # Convert negative number to 16-bit two's complement
-                                machine_code_line[16:32] = f"{(1 << 16) + int(MIPS_element[code]):016b}"
-                            else:
-                                machine_code_line[16:
-                                                  32] = f"{int(MIPS_element[code]):016b}"
+    elif instr_type == "I":
+        # I_type = {"opcode", "rs", "rt", "imm"}
+        # print(MIPS_element)
+        for code in m.I_type:
+            if code == "opcode":
+                machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
+            elif code == "rs":
+                if "rs" in MIPS_element:
+                    machine_code_line[6:11] = f"{int(MIPS_element[code]):05b}"
+            elif code == "rt":
+                if "rt" in MIPS_element:
+                    machine_code_line[11:16] = f"{int(MIPS_element[code]):05b}"
+            elif code == "imm":
+                if "imm" in MIPS_element:
+                    if int(MIPS_element[code]) < 0:
+                        # Convert negative number to 16-bit two's complement
+                        machine_code_line[16:32] = f"{(1 << 16) + int(MIPS_element[code]):016b}"
+                    else:
+                        machine_code_line[16:
+                                          32] = f"{int(MIPS_element[code]):016b}"
 
-        case "J":
-            # J_type = {"opcode", "imm"}
-            for code in m.J_type:
-                match code:
-                    case "opcode":
-                        machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
-                    case "imm":
-                        if int(MIPS_element[code]) < 0:
-                            # Convert negative number to 16-bit two's complement
-                            machine_code_line[6:32] = f"{(1 << 16) + int(MIPS_element[code]):026b}"
-                        else:
-                            machine_code_line[6:
-                                              32] = f"{int(MIPS_element[code]):026b}"
+    elif instr_type == "J":
+        # J_type = {"opcode", "imm"}
+        for code in m.J_type:
+            if code == "opcode":
+                machine_code_line[0:6] = f"{int(MIPS_element[code]):06b}"
+            elif code == "imm":
+                if int(MIPS_element[code]) < 0:
+                    # Convert negative number to 16-bit two's complement
+                    machine_code_line[6:32] = f"{(1 << 16) + int(MIPS_element[code]):026b}"
+                else:
+                    machine_code_line[6:32] = f"{int(MIPS_element[code]):026b}"
     # print(f.list_to_string(machine_code_line))
     machine_code.append(f.list_to_string(machine_code_line))
     machine_code.append('\n')
 
-
-machine_code = f.list_to_string(machine_code)
-with open(str(output_file), 'w') as file:
-    file.write(machine_code)
+    machine_code = f.list_to_string(machine_code)
+    with open(str(output_file), 'w') as file:
+        file.write(machine_code)

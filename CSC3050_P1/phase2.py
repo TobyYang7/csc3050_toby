@@ -68,6 +68,7 @@ for line in text.split('\n'):
 
     # label detection
     label_address = None
+    # print(elements)
     if elements[-1] in label_dict:
         label_address = label_dict[elements[-1]]
 

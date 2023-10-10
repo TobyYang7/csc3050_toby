@@ -10,6 +10,7 @@ def print_file(file):
 
 def pre_process(file):
     text = rm(file)
+    text += " "
     text = load_text(text)
     label_dict = find_labels(text)
     text = rm_labels(text)
@@ -57,6 +58,8 @@ def rm_labels(text):
 def load_text(text):
     start_index = text.find('.text')
     end_index = text.find('.data')
+    if end_index != -1 and end_index < start_index:
+        end_index = -1
     if start_index == -1:
         return text
     else:
@@ -124,6 +127,8 @@ def translate(type_num, inst, reg, address, imm, label, current):
         return {"opcode": inst["opcode"], "rs": reg[0], "imm": int(label-current)}
     elif type_num == 8:  # fix: check
         # xxx label
+        # print("PC%d" % current)
+        # print("label:", label)
         address = START_ADDRESS + label*4
         num = Jtype_drop(address)
         return {"opcode": inst["opcode"], "imm": num}

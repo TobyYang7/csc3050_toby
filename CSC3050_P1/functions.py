@@ -9,11 +9,31 @@ def print_file(file):
 
 
 def pre_process(file):
+    """
+    Pre-processes the given file by removing unwanted text, loading the text, finding labels, and removing labels.
+
+    Args:
+        file (str): The file to be pre-processed.
+
+    Returns:
+        tuple: A tuple containing the pre-processed text and a dictionary of labels found in the text.
+    """
+    # Remove unwanted text
     text = rm(file)
+
+    # Add space to the end of the text
     text += " "
+
+    # Load the text
     text = load_text(text)
+
+    # Find labels in the text
     label_dict = find_labels(text)
+
+    # Remove labels from the text
     text = rm_labels(text)
+
+    # Return the pre-processed text and the dictionary of labels
     return text, label_dict
 
 
@@ -90,6 +110,15 @@ def list_to_string(lst):
 
 
 def Jtype_drop(num):
+    """
+    Drops the upper 4 bits and lower 2 bits of a 32-bit binary number.
+
+    Args:
+        num (int): A 32-bit binary number.
+
+    Returns:
+        int: The result of dropping the upper 4 bits and lower 2 bits of the input number.
+    """
     # Convert num to 32-bit binary string
     binary_str = format(num, '032b')
     # Drop upper 4 bits and lower 2 bits
@@ -100,6 +129,21 @@ def Jtype_drop(num):
 
 
 def translate(type_num, inst, reg, address, imm, label, current):
+    """
+    Translates the given instruction into its corresponding binary format.
+
+    Parameters:
+    type_num (int): The type of instruction.
+    inst (dict): The instruction dictionary containing the opcode and function fields.
+    reg (list): The list of registers used in the instruction.
+    address (dict): The dictionary containing the register and immediate fields used in the instruction.
+    imm (int): The immediate value used in the instruction.
+    label (int): The label value used in the instruction.
+    current (int): The current instruction address.
+
+    Returns:
+    dict: The dictionary containing the binary format of the instruction.
+    """
     # reg[], address["reg"], address["imm"]
     # inst["opcode"], inst["function"]
     if type_num == 1:

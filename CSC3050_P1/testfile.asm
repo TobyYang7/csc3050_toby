@@ -1,5 +1,5 @@
 .text
-lw $t1, -400($fp)
+lw $t1,-400($fp)
 lw $t2, 400($fp)
 lw $t3, 0($fp)
 sw $t1, -400($fp)

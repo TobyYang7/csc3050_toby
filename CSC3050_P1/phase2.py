@@ -14,8 +14,11 @@ for line in text.split('\n'):
     if line == '' or line == '\n':
         continue
     line.replace(',', '')
-    elements = line.split(' ')
-
+    input_elements = line.split(',')
+    elements = [item for sublist in [s.split() for s in input_elements]
+                for item in sublist]
+    # elements = input_elements
+    print(elements)
     # instruction detection
     instruction = None
     if elements[0] in m.MIPS_instruction_table:

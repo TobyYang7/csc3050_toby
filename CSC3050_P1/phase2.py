@@ -18,7 +18,7 @@ for line in text.split('\n'):
     elements = [item for sublist in [s.split() for s in input_elements]
                 for item in sublist]
     # elements = input_elements
-    print(elements)
+    # print(elements)
     # instruction detection
     instruction = None
     if elements[0] in m.MIPS_instruction_table:

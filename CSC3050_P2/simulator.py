@@ -2,9 +2,9 @@ import sys
 import os
 read_index = 0
 
-# For memory: one element represent 1 memory address = 4 bytea
+# For memory: one element represent 1 memory address = 4 byte
 # For register: same with memory
-# When cmputing pc_counter, we first convert to decimal and calculate the absolut address, then
+# When computing pc_counter, we first convert to decimal and calculate the absolute address, then
 # we convert into binary forms
 
 memory = ['0'*32]*(6*2**18)
@@ -249,17 +249,34 @@ def I_execution(memory, register, machine_code):
     return (memory, register)
 
 
+def J_execution(register, machine_code):
+    opcode = machine_code[:6]
+    address = machine_code[6:]
+    address_decimal = unsign_bin_to_dec(address)
+    if opcode == '000010':
+        register[32] = unsign_dec_to_bin(address_decimal*4, 32)
+    elif opcode == '000011':
+        register[32] = unsign_dec_to_bin(address_decimal*4, 32)
+    return register
+
+
+# Execute the instruction
 def execution(memory, register, read_index, machine_code, dynamic_address, test_in, test_out):
+    # Check if the opcode is R-type
     if machine_code[0:6] == '000000':
+        # Call R_execution function to execute the instruction
         (memory, register, read_index, dynamic_address) = R_execution(
             memory, register, read_index, machine_code, dynamic_address, test_in, test_out)
+    # Check if the opcode is J-type
     elif machine_code[0:6] == '000010' or machine_code[0:6] == '000011':
+        # Call J_execution function to execute the instruction
         register = J_execution(register, machine_code)
+    # Otherwise, the opcode is I-type
     else:
+        # Call I_execution function to execute the instruction
         memory, register = I_execution(memory, register, machine_code)
+    # Return the updated memory, register, read_index, and dynamic_address values
     return (memory, register, read_index, dynamic_address)
-
-# Dump the file
 
 
 def dump(checkpoints_list, memory, register, iteration):

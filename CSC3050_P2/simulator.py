@@ -1,6 +1,7 @@
 import simulator_functions as sim
 import os
 import sys
+
 TEXT_START = 0x400000
 TEXT_END = 0x500000
 DATA_START = 0x500000
@@ -14,6 +15,7 @@ register[28] = '0'*8+'10000000'+'01010000'+'0'*8
 register[29] = '0'*16+'1010'+'0'*12
 register[30] = '0'*16+'1010'+'0'*12
 register[32] = '0'*16+'0100'+'0'*12
+
 
 test_asm = sys.argv[1]
 test_txt = sys.argv[2]
@@ -35,6 +37,7 @@ with open(test_checkpoints, 'r') as file1:
     checkpoints_list = file1.readlines()
 
 for i in range(0, len(checkpoints_list)):
+    print('checkpoints:', checkpoints_list[i])
     checkpoints_list[i] = int(checkpoints_list[i].strip())
 
 # Calculate the beginning index of dynamic address

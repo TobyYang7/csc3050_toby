@@ -1,0 +1,1 @@
+./simulator Example_test_cases/a-plus-b/a-plus-b.asm Example_test_cases/a-plus-b/a-plus-b.txt Example_test_cases/a-plus-b/a-plus-b_checkpts.txt Example_test_cases/a-plus-b/a-plus-b_checkpts.txt Example_test_cases/a-plus-b/a-plus-b.in a-plus-b.out

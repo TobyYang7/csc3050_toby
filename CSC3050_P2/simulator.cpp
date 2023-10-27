@@ -39,7 +39,12 @@ string getFirst(string s)
 Simulator::Simulator()
 {
 	this->memory_pointer = (char *)calloc(0x600000, sizeof(char)); // allocate 0x600000 bytes memory
-	this->pc = 0x400000;										   // initialize program counter to the first of the instruction
+	this->reg[$gp] = 0x508000;									   // initialize $gp global pointer (point to static data section)
+	this->reg[$sp] = 0xA00000;									   // initialize $sp stack pointer
+	this->reg[$fp] = 0xA00000;									   // initialize $fp
+	this->hi = 0;
+	this->lo = 0;
+	this->pc = 0x400000; // initialize program counter to the first of the instruction
 }
 
 Simulator::~Simulator()

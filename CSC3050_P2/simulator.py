@@ -1,48 +1,56 @@
-import simulator_functions as sim
-import os
-import sys
+from lib import *
+from sys import argv
 
-TEXT_START = 0x400000
-TEXT_END = 0x500000
-DATA_START = 0x500000
-DATA_END = 0x600000
-STACK_END = 0x9fffff
+if __name__ == '__main__':
+    # Initialization of program memory and register
+    for i in range(32 + 3):
+        reg[i] = 0
 
-read_index = 0
-memory = ['0'*32]*(6*2**18)
-register = ['0'*32]*35
-register[28] = '0'*8+'10000000'+'01010000'+'0'*8
-register[29] = '0'*16+'1010'+'0'*12
-register[30] = '0'*16+'1010'+'0'*12
-register[32] = '0'*16+'0100'+'0'*12
+    # for i in range(len(argv)):
+    #     print("--argv[%d]--" % i)
+    #     print(argv[i])
 
+    prog = bytearray(MEMORY_SIZE)
+    reg[REGS.get("_pc")] = pc
+    reg[REGS.get("_gp")] = gp
+    reg[REGS.get("_sp")] = sp
+    reg[REGS.get("_fp")] = sp
 
-test_asm = sys.argv[1]
-test_txt = sys.argv[2]
-test_checkpoints = sys.argv[3]
-test_in = sys.argv[4]
-test_out = sys.argv[5]
+    # load in checkpoints
+    init_checkpoints(argv[3])
 
+    # load .data and .text segment in memory
+    data_handler(argv[1])
+    text_seg(argv[2])
 
-with open(test_asm, "r") as file1:
-    content = file1.readlines()
-no_comment_content = sim.delete_comment(content)
-memory, dynamic_index = sim.static_data(no_comment_content, memory, 2**18)
+    # open file of [fileName].in and [fileName].out
+    infile = open(argv[4], 'r')
+    outfile = open(argv[5], 'w')
 
-# Assemble the codes
-# test_txt = 'D:\Daerxia\CSC3050\Assignment2\\new\\tests\many\many.txt'
-memory = sim.assemble_machine_code(memory, test_txt)
+    # initialize essential value
+    return_val = 0
+    to_exit = False
+    curr_ins = 0
+    total_ins = 0
 
-with open(test_checkpoints, 'r') as file1:
-    checkpoints_list = file1.readlines()
+    # start simulation
+    while curr_ins >= 0 and curr_ins < len(my_ins):
+        # check if the instruction needs to be dumped
+        checkpoint_memory(total_ins)
+        checkpoint_register(total_ins)
 
-for i in range(0, len(checkpoints_list)):
-    print('checkpoints:', checkpoints_list[i])
-    checkpoints_list[i] = int(checkpoints_list[i].strip())
+        # syscall: _exit() || _exit2()
+        if to_exit:
+            break
 
-# Calculate the beginning index of dynamic address
-dynamic_address = (dynamic_index-2**18)*4 + 5242880
+        inst = my_ins[curr_ins]
+        reg[REGS.get("_pc")] += 4
+        execute_cmd(inst, infile, outfile, to_exit, return_val)
+        curr_ins = (reg[REGS.get("_pc")] - STARTING_ADDRESS) >> 2
+        total_ins += 1
 
-# Main simulation
-sim.simulation(memory, register, dynamic_address, read_index,
-               checkpoints_list, test_in, test_out)
+    checkpoint_memory(total_ins)
+    checkpoint_register(total_ins)
+
+    infile.close()
+    outfile.close()

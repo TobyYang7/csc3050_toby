@@ -286,10 +286,8 @@ def text_seg(file_name):
 
 
 def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
+    res = []
     op_code = machine_code[:6]
-
-    # print("--infile--", infile)
-
     if op_code == "000000":
         rs = bin_to_num(machine_code[6:11])
         rt = bin_to_num(machine_code[11:16])
@@ -333,7 +331,9 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
             0b100110: lambda: _xor(rd, rs, rt),
         }
 
-        switch.get(func, lambda: None)()
+        tmp = switch.get(func, lambda: None)()
+        if tmp is not None:
+            res = tmp
 
     elif op_code == "000010" or op_code == "000011":
         target = bin_to_num(machine_code[6:32])
@@ -389,3 +389,4 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         }
 
         switch.get(bin_to_num(op_code), lambda: None)()
+    return res

@@ -561,6 +561,7 @@ def _syscall(fin, fout, to_exit, return_val):
         _sbrk()
     elif syscall_number == 10:
         return_val = _exit(to_exit)
+        return [True, return_val]
     elif syscall_number == 11:
         _print_char(fout)
     elif syscall_number == 12:
@@ -574,4 +575,7 @@ def _syscall(fin, fout, to_exit, return_val):
     elif syscall_number == 16:
         _close()
     elif syscall_number == 17:
-        return_val[0] = _exit2(to_exit)
+        return_val = _exit2(to_exit)
+        return [True, return_val]
+    else:
+        return []

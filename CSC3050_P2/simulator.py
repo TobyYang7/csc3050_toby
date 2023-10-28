@@ -39,6 +39,7 @@ if __name__ == '__main__':
     curr_ins = 0
     total_ins = 0
     to_exit = False
+    flag = []
 
     # start simulation
     while curr_ins >= 0 and curr_ins < len(my_ins):
@@ -47,17 +48,22 @@ if __name__ == '__main__':
         checkpoint_memory(total_ins)
         checkpoint_register(total_ins)
 
-        # syscall: _exit() || _exit2()
-        if to_exit:
-            print("==============exit===================")
-            break
+        # if True in flag:
+        #     print("==============exit===================")
+        #     break
 
         inst = my_ins[curr_ins]
         reg[REGS.get("_pc")] += 4
-        execute_cmd(inst, infile, outfile, to_exit, return_val)
+        flag = execute_cmd(inst, infile, outfile, to_exit, return_val)
+        # print("--flag--", flag)
         curr_ins = (reg[REGS.get("_pc")] - STARTING_ADDRESS) >> 2
         total_ins += 1
 
+        if True in flag:
+            print("==============exit===================")
+            break
+
+    print("--return--", flag[1])
     checkpoint_memory(total_ins)
     checkpoint_register(total_ins)
 

@@ -31,7 +31,7 @@ def checkpoint_register(ins_count):
 
 
 def data_handler(file_name):
-    global STATIC_DATA
+    global STATIC_DATA, prog
 
     infile = open(file_name, 'r')
     line = ""
@@ -58,8 +58,6 @@ def data_handler(file_name):
         line = ignore_label(line)
         line = ignore_comment(line)
         line = line.strip()
-
-        print("--current--", line)
 
         if ".data" in line:
             at_dot_data = True
@@ -191,20 +189,28 @@ def data_handler(file_name):
                 continue
 
             if ".word" in line:
-                line = line[line.find(".word") + 6:]
-                nums = line.split()
+                line = line[line.find(".word") + 5:].strip()
+                nums = line.replace(',', ' ').split()
 
                 for num_str in nums:
-                    num = int(num_str)
-                    # print("--word num--", num)
-                    ptr = prog[TEXT_SIZE + STATIC_DATA:]
-                    ptr[0] = num & 0xff
-                    ptr[1] = (num >> 8) & 0xff
-                    ptr[2] = (num >> 16) & 0xff
-                    ptr[3] = (num >> 24) & 0xff
-                    STATIC_DATA += 4
+                    try:
+                        num = int(num_str)
+                    except ValueError:
+                        print(f"Invalid number: {num_str}")
+                        continue
+                    print("--word num--", num)
 
-                continue
+                    ptr_index = TEXT_SIZE + STATIC_DATA
+                    if ptr_index + 4 > len(prog):
+                        print(
+                            f"Not enough space in prog at index {ptr_index} to store the number {num}")
+                        continue
+
+                    prog[ptr_index] = num & 0xff
+                    prog[ptr_index + 1] = (num >> 8) & 0xff
+                    prog[ptr_index + 2] = (num >> 16) & 0xff
+                    prog[ptr_index + 3] = (num >> 24) & 0xff
+                    STATIC_DATA += 4
 
             if ".byte" in data_type:
                 line = line[line.find(".byte") + 5:]

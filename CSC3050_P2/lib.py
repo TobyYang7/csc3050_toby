@@ -3,7 +3,7 @@ import struct
 from enum import Enum
 
 
-MEMORY_SIZE = 6 * 1024 * 1024
+MEMORY_SIZE = 6 * 1024 * 1024  # 6291456
 TEXT_SIZE = 1 * 1024 * 1024
 STARTING_ADDRESS = 0x400000
 STATIC_DATA = 0
@@ -346,11 +346,15 @@ def _sh(rs, rt, imm):
 
 
 def _sw(rs, rt, imm):
-    base = prog + reg[rs] + imm - STARTING_ADDRESS
-    base[0] = reg[rt] & 0xff
-    base[1] = (reg[rt] >> 8) & 0xff
-    base[2] = (reg[rt] >> 16) & 0xff
-    base[3] = (reg[rt] >> 24) & 0xff
+    imm = imm & 0xFFFF
+    if imm & 0x8000:  # 如果最高位（符号位）是 1
+        imm = imm - 0x10000  # 将其转换为负数
+    print("--sw--", reg[rs], reg[rt], imm)
+    base_index = reg[rs] + imm - STARTING_ADDRESS
+    prog[base_index] = reg[rt] & 0xff
+    prog[base_index + 1] = (reg[rt] >> 8) & 0xff
+    prog[base_index + 2] = (reg[rt] >> 16) & 0xff
+    prog[base_index + 3] = (reg[rt] >> 24) & 0xff
 
 
 def _xori(rs, rt, imm):
@@ -404,7 +408,9 @@ def _print_int(fout):
 
 
 def _print_string(fout):
-    fout.write(prog + reg[REGS.get("_a0")] - STARTING_ADDRESS)
+    start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
+    fout.write(bytearray(prog[start_address:]).decode('utf-8'))
+
     fout.flush()
 
 

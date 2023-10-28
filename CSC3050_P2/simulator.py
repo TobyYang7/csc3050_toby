@@ -20,6 +20,11 @@ if __name__ == '__main__':
     # load in checkpoints
     init_checkpoints(argv[3])
     print("--checkpoints--", checkpoints)
+    print("---mem len---", len(prog))
+
+    print("==============init===================")
+    print(reg)
+    print("=====================================")
 
     # load .data and .text segment in memory
     data_handler(argv[1])

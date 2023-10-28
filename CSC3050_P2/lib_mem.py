@@ -15,7 +15,7 @@ def checkpoint_memory(ins_count):
     if ins_count not in checkpoints:
         # print("--mem count not in--", ins_count)
         return
-    print("--mem count in--", ins_count)
+    print("--mem change--", ins_count)
     name = f"memory_{ins_count}.bin"
     with open(name, "wb") as fp:
         fp.write(prog[:0x600000])
@@ -24,7 +24,7 @@ def checkpoint_memory(ins_count):
 def checkpoint_register(ins_count):
     if ins_count not in checkpoints:
         return
-    print("--reg count in--", ins_count)
+    print("--reg change--", ins_count)
     name = f"register_{ins_count}.bin"
     with open(name, "wb") as fp:
         fp.write(struct.pack('i' * len(reg), *reg))
@@ -103,7 +103,8 @@ def data_handler(file_name):
                             contin_bs = 0
                     elif line[i] != '\\':
                         if contin_bs == 0:
-                            prog[TEXT_SIZE + STATIC_DATA + length] = line[i]
+                            prog[TEXT_SIZE + STATIC_DATA +
+                                 length] = ord(line[i])
                             length += 1
                         elif contin_bs != 0:
                             prog[TEXT_SIZE + STATIC_DATA +
@@ -112,14 +113,15 @@ def data_handler(file_name):
                             contin_bs = 0
 
                 if contin_bs % 2 != 0:
-                    prog[TEXT_SIZE + STATIC_DATA + length] = get_char(line[-1])
+                    prog[TEXT_SIZE + STATIC_DATA +
+                         length] = ord(get_char(line[-1]))
                     contin_bs = 0
                 elif contin_bs % 2 == 0:
-                    prog[TEXT_SIZE + STATIC_DATA + length] = line[-1]
+                    prog[TEXT_SIZE + STATIC_DATA + length] = ord(line[-1])
                     contin_bs = 0
 
                 length += 1
-                prog[TEXT_SIZE + STATIC_DATA + length] = '\0'
+                prog[TEXT_SIZE + STATIC_DATA + length] = ord('\0')
                 length += 1
 
                 if length % 4 == 0:
@@ -296,6 +298,12 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         sa = bin_to_num(machine_code[21:26])
         func = bin_to_num(machine_code[26:32])
 
+        print("==============000000=================")
+        # print("--rs rt imm--", rs, rt, imm)
+        print(reg)
+        print("--sp--", reg[REGS.get("_sp")])
+        print("=====================================")
+
         switch = {
             0b100000: lambda: _add(rs, rt, rd),
             0b100001: lambda: _addu(rs, rt, rd),
@@ -331,6 +339,12 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
     elif op_code == "000010" or op_code == "000011":
         target = bin_to_num(machine_code[6:32])
 
+        print("===============jump==================")
+        # print("--rs rt imm--", rs, rt, imm)
+        print(reg)
+        print("--sp--", reg[REGS.get("_sp")])
+        print("=====================================")
+
         if op_code == "000010":
             _j(target)
         else:
@@ -340,6 +354,12 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         rs = bin_to_num(machine_code[6:11])
         rt = bin_to_num(machine_code[11:16])
         imm = bin_to_num(machine_code[16:32])
+
+        print("===============case3=================")
+        print("--rs rt imm--", rs, rt, imm)
+        print(reg)
+        print("--sp--", reg[REGS.get("_sp")])
+        print("=====================================")
 
         switch = {
             0b001000: lambda: _addi(rt, rs, imm),

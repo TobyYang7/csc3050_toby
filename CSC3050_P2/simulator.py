@@ -1,4 +1,5 @@
 from lib import *
+from lib_mem import *
 from sys import argv
 
 if __name__ == '__main__':
@@ -18,6 +19,7 @@ if __name__ == '__main__':
 
     # load in checkpoints
     init_checkpoints(argv[3])
+    print("--checkpoints--", checkpoints)
 
     # load .data and .text segment in memory
     data_handler(argv[1])

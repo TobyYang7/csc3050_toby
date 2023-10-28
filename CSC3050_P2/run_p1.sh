@@ -1,4 +1,4 @@
-python3 simulator.py Example_test_cases/a-plus-b/a-plus-b.asm Example_test_cases/a-plus-b/a-plus-b.txt Example_test_cases/a-plus-b/a-plus-b_checkpts.txt Example_test_cases/a-plus-b/a-plus-b.in Example_test_cases/a-plus-b/a-plus-b.in a-plus-b.out
+python3 simulator.py Example_test_cases/a-plus-b/a-plus-b.asm Example_test_cases/a-plus-b/a-plus-b.txt Example_test_cases/a-plus-b/a-plus-b_checkpts.txt Example_test_cases/a-plus-b/a-plus-b.in a-plus-b.out
 
 a=0
 cmp register_$a.bin Example_test_cases/a-plus-b/correct_dump/register_$a.bin

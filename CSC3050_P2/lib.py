@@ -133,85 +133,108 @@ def to_hex(num, length):
 
 def _add(rs, rt, rd):
     reg[rd] = reg[rs] + reg[rt]
+    print("--add--", reg[rs], reg[rt], reg[rd])
 
 
 def _addu(rs, rt, rd):
     reg[rd] = reg[rs] + reg[rt]
+    print("--addu--", reg[rs], reg[rt], reg[rd])
 
 
 def _and(rs, rt, rd):
     reg[rd] = reg[rs] & reg[rt]
+    print("--and--", reg[rs], reg[rt], reg[rd])
 
 
 def _div(rs, rt):
     reg[REGS.get("_lo")] = int(reg[rs] / reg[rt])
     reg[REGS.get("_hi")] = int(reg[rs] % reg[rt])
+    print("--div--", reg[rs], reg[rt],
+          reg[REGS.get("_lo")], reg[REGS.get("_hi")])
 
 
 def _divu(rs, rt):
     reg[REGS.get("_lo")] = reg[rs] / reg[rt]
     reg[REGS.get("_hi")] = reg[rs] % reg[rt]
+    print("--divu--", reg[rs], reg[rt],
+          reg[REGS.get("_lo")], reg[REGS.get("_hi")])
 
 
 def _jalr(rs, rd):
     reg[rd] = reg[REGS.get("_pc")]
     reg[REGS.get("_pc")] = reg[rs]
+    print("--jalr--", reg[rs], reg[rd], reg[REGS.get("_pc")])
 
 
 def _jr(rs):
     reg[REGS.get("_pc")] = reg[rs]
+    print("--jr--", reg[rs], reg[REGS.get("_pc")])
 
 
 def _mfhi(rd):
     reg[rd] = reg[REGS.get("_hi")]
+    print("--mfhi--", reg[REGS.get("_hi")], reg[rd])
 
 
 def _mflo(rd):
     reg[rd] = reg[REGS.get("_lo")]
+    print("--mflo--", reg[REGS.get("_lo")], reg[rd])
 
 
 def _mthi(rs):
     reg[REGS.get("_hi")] = reg[rs]
+    print("--mthi--", reg[rs], reg[REGS.get("_hi")])
 
 
 def _mtlo(rs):
     reg[REGS.get("_lo")] = reg[rs]
+    print("--mtlo--", reg[rs], reg[REGS.get("_lo")])
 
 
 def _mult(rt, rs):
     rst = reg[rs] * reg[rt]
     reg[REGS.get("_hi")] = int(rst >> 32)
     reg[REGS.get("_lo")] = int(rst & 0xffffffff)
+    print("--mult--", reg[rs], reg[rt],
+          reg[REGS.get("_hi")], reg[REGS.get("_lo")])
 
 
 def _multu(rs, rt):
     rst = reg[rs] * reg[rt]
     reg[REGS.get("_hi")] = int(rst >> 32)
     reg[REGS.get("_lo")] = int(rst & 0xffffffff)
+    print("--multu--", reg[rs], reg[rt],
+          reg[REGS.get("_hi")], reg[REGS.get("_lo")])
 
 
 def _nor(rs, rt, rd):
     reg[rd] = ~(reg[rs] | reg[rt])
+    print("--nor--", reg[rs], reg[rt], reg[rd])
 
 
 def _or(rs, rt, rd):
     reg[rd] = reg[rs] | reg[rt]
+    print("--or--", reg[rs], reg[rt], reg[rd])
 
 
 def _sll(rd, rt, sa):
     reg[rd] = reg[rt] << sa
+    print("--sll--", reg[rt], sa, reg[rd])
 
 
 def _sllv(rd, rs, rt):
     reg[rd] = reg[rt] << reg[rs]
+    print("--sllv--", reg[rt], reg[rs], reg[rd])
 
 
 def _slt(rd, rs, rt):
     reg[rd] = 1 if int(reg[rs]) < int(reg[rt]) else 0
+    print("--slt--", reg[rs], reg[rt], reg[rd])
 
 
 def _sltu(rd, rs, rt):
     reg[rd] = 1 if reg[rs] < reg[rt] else 0
+    print("--sltu--", reg[rs], reg[rt], reg[rd])
 
 
 def _sra(rd, rt, sa):
@@ -220,6 +243,7 @@ def _sra(rd, rt, sa):
     if sign_bit:
         for i in range(min(32, sa)):
             reg[rd] |= sign_bit >> i
+    print("--sra--", reg[rt], sa, reg[rd])
 
 
 def _srav(rd, rs, rt):
@@ -228,76 +252,95 @@ def _srav(rd, rs, rt):
     if sign_bit:
         for i in range(min(32, reg[rs])):
             reg[rd] |= sign_bit >> i
+    print("--srav--", reg[rt], reg[rs], reg[rd])
 
 
 def _srl(rd, rt, sa):
     reg[rd] = reg[rt] >> sa
+    print("--srl--", reg[rt], sa, reg[rd])
 
 
 def _srlv(rd, rs, rt):
     reg[rd] = reg[rt] >> reg[rs]
+    print("--srlv--", reg[rt], reg[rs], reg[rd])
 
 
 def _sub(rd, rs, rt):
     reg[rd] = reg[rs] - reg[rt]
+    print("--sub--", reg[rs], reg[rt], reg[rd])
 
 
 def _subu(rd, rs, rt):
     reg[rd] = reg[rs] - reg[rt]
+    print("--subu--", reg[rs], reg[rt], reg[rd])
 
 
 def _xor(rd, rs, rt):
     reg[rd] = reg[rs] ^ reg[rt]
+    print("--xor--", reg[rs], reg[rt], reg[rd])
 
 
 def _addi(rt, rs, imm):
+    if imm & 0x8000:
+        imm = imm - 0x10000
     reg[rt] = reg[rs] + imm
+    print("--addi--", reg[rs], imm, reg[rt])
 
 
 def _addiu(rt, rs, imm):
     reg[rt] = reg[rs] + imm
+    print("--addiu--", reg[rs], imm, reg[rt])
 
 
 def _andi(rt, rs, imm):
     reg[rt] = reg[rs] & (imm & 0xffff)
+    print("--andi--", reg[rs], imm, reg[rt])
 
 
 def _beq(rs, rt, imm):
     if reg[rs] == reg[rt]:
         reg[REGS.get("_pc")] += imm * 4
+        print("--beq--", reg[rs], reg[rt], imm, reg[REGS.get("_pc")])
 
 
 def _bgez(rs, imm):
     if int(reg[rs]) >= 0:
         reg[REGS.get("_pc")] += imm * 4
+        print("--bgez--", reg[rs], imm, reg[REGS.get("_pc")])
 
 
 def _bgtz(rs, imm):
     if int(reg[rs]) > 0:
         reg[REGS.get("_pc")] += imm * 4
+        print("--bgtz--", reg[rs], imm, reg[REGS.get("_pc")])
 
 
 def _blez(rs, imm):
     if int(reg[rs]) <= 0:
         reg[REGS.get("_pc")] += imm * 4
+        print("--blez--", reg[rs], imm, reg[REGS.get("_pc")])
 
 
 def _bltz(rs, imm):
     if int(reg[rs]) < 0:
         reg[REGS.get("_pc")] += imm * 4
+        print("--bltz--", reg[rs], imm, reg[REGS.get("_pc")])
 
 
 def _bne(rs, rt, imm):
     if reg[rs] != reg[rt]:
         reg[REGS.get("_pc")] += imm * 4
+        print("--bne--", reg[rs], reg[rt], imm, reg[REGS.get("_pc")])
 
 
 def _lb(rt, rs, imm):
     reg[rt] = int(prog[reg[rs] + imm - STARTING_ADDRESS])
+    print("--lb--", reg[rs], imm, reg[rt])
 
 
 def _lbu(rt, rs, imm):
     reg[rt] = prog[reg[rs] + imm - STARTING_ADDRESS]
+    print("--lbu--", reg[rs], imm, reg[rt])
 
 
 def _lh(rs, rt, imm):
@@ -306,49 +349,59 @@ def _lh(rs, rt, imm):
     reg[rt] = lo | (hi << 8)
     if hi & 0x80:
         reg[rt] |= 0xffff << 16
+    print("--lh--", reg[rs], imm, reg[rt])
 
 
 def _lhu(rs, rt, imm):
     hi = prog[reg[rs] + imm - STARTING_ADDRESS + 1]
     lo = prog[reg[rs] + imm - STARTING_ADDRESS]
     reg[rt] = lo | (hi << 8)
+    print("--lhu--", reg[rs], imm, reg[rt])
 
 
 def _lui(rt, imm):
     reg[rt] = imm << 16
+    print("--lui--", imm, reg[rt])
 
 
 def _lw(rs, rt, imm):
-    base = prog + reg[rs] + imm - STARTING_ADDRESS
+    idx = reg[rs] + imm - STARTING_ADDRESS
+    base = bytearray(prog[idx:idx + 4])  # 获取prog中的4个字节作为bytearray
     reg[rt] = base[0] | (base[1] << 8) | (base[2] << 16) | (base[3] << 24)
+    print("--lw--", reg[rs], imm, reg[rt])
 
 
 def _ori(rs, rt, imm):
     reg[rt] = reg[rs] | imm
+    print("--ori--", reg[rs], imm, reg[rt])
 
 
 def _sb(rs, rt, imm):
     prog[reg[rs] + imm - STARTING_ADDRESS] = reg[rt] & 0xff
+    print("--sb--", reg[rs], reg[rt], imm)
 
 
 def _slti(rs, rt, imm):
     reg[rt] = 1 if int(reg[rs]) < imm else 0
+    print("--slti--", reg[rs], imm, reg[rt])
 
 
 def _sltiu(rs, rt, imm):
     reg[rt] = 1 if reg[rs] < imm else 0
+    print("--sltiu--", reg[rs], imm, reg[rt])
 
 
 def _sh(rs, rt, imm):
     base = prog + reg[rs] + imm - STARTING_ADDRESS
     base[0] = reg[rt] & 0xff
     base[1] = reg[rt] >> 8
+    print("--sh--", reg[rs], reg[rt], imm)
 
 
 def _sw(rs, rt, imm):
     imm = imm & 0xFFFF
-    if imm & 0x8000:  # 如果最高位（符号位）是 1
-        imm = imm - 0x10000  # 将其转换为负数
+    if imm & 0x8000:
+        imm = imm - 0x10000
     print("--sw--", reg[rs], reg[rt], imm)
     base_index = reg[rs] + imm - STARTING_ADDRESS
     prog[base_index] = reg[rt] & 0xff
@@ -359,6 +412,7 @@ def _sw(rs, rt, imm):
 
 def _xori(rs, rt, imm):
     reg[rt] = reg[rs] ^ imm
+    print("--xori--", reg[rs], imm, reg[rt])
 
 
 def _lwl(rs, rt, imm):
@@ -367,6 +421,7 @@ def _lwl(rs, rt, imm):
     for i in range(idx, lower_bound - 1, -1):
         reg[rt] &= ~(0xff << (i % 4) * 8)
         reg[rt] |= prog[i] << (i % 4) * 8
+    print("--lwl--", reg[rs], imm, reg[rt])
 
 
 def _lwr(rs, rt, imm):
@@ -375,6 +430,7 @@ def _lwr(rs, rt, imm):
     for i in range(idx, upper_bound):
         reg[rt] &= ~(0xff << (i % 4) * 8)
         reg[rt] |= prog[i] << (i % 4) * 8
+    print("--lwr--", reg[rs], imm, reg[rt])
 
 
 def _swl(rs, rt, imm):
@@ -382,6 +438,7 @@ def _swl(rs, rt, imm):
     lower_bound = idx & (~3)
     for i in range(idx, lower_bound - 1, -1):
         prog[i] = (reg[rt] >> (i % 4) * 8) & 0xff
+    print("--swl--", reg[rs], imm, reg[rt])
 
 
 def _swr(rs, rt, imm):
@@ -389,17 +446,20 @@ def _swr(rs, rt, imm):
     upper_bound = (idx + 4) & (~3)
     for i in range(idx, upper_bound):
         prog[i] = (reg[rt] >> (i % 4) * 8) & 0xff
+    print("--swr--", reg[rs], reg[rt], imm, prog)
 
 
 def _j(target):
     reg[REGS.get("_pc")] &= 0xf0000000
     reg[REGS.get("_pc")] |= target << 2
+    print("--j--", target, reg[REGS.get("_pc")])
 
 
 def _jal(target):
     reg[REGS.get("_ra")] = reg[REGS.get("_pc")]
     reg[REGS.get("_pc")] &= 0xf0000000
     reg[REGS.get("_pc")] |= target << 2
+    print("--jal--", target, reg[REGS.get("_ra")], reg[REGS.get("_pc")])
 
 
 def _print_int(fout):
@@ -408,9 +468,10 @@ def _print_int(fout):
 
 
 def _print_string(fout):
+    print("--print string--", reg[REGS.get("_a0")] - STARTING_ADDRESS)
     start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
-    fout.write(bytearray(prog[start_address:]).decode('utf-8'))
-
+    fout.write(bytearray(prog[start_address:]).decode(
+        'utf-8', errors='replace'))
     fout.flush()
 
 
@@ -475,9 +536,9 @@ def _exit2(to_exit):
 
 
 def _syscall(fin, fout, to_exit, return_val):
-    print("--sys--", REGS.get("_v0"))
+    # print("--sys--", REGS.get("_v0"))
     syscall_number = reg[int(REGS.get("_v0"))]
-    print("--sys num--", reg[REGS.get("_v0")])
+    # print("--sys num--", reg[REGS.get("_v0")])
 
     if syscall_number == 1:
         _print_int(fout)

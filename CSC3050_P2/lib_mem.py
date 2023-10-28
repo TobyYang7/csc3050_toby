@@ -10,7 +10,6 @@ def init_checkpoints(checkpoint_file):
             checkpoints.add(int(line.strip()))
 
 
-# todo: check
 def checkpoint_memory(ins_count):
     if ins_count not in checkpoints:
         # print("--mem count not in--", ins_count)

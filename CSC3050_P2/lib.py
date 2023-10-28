@@ -464,15 +464,22 @@ def _jal(target):
 
 
 def _print_int(fout):
-    fout.write(str(int(reg[REGS.get("_a0")])))
+    fout.write(str(int(reg[REGS.get("_a0")])).encode('ascii'))
     fout.flush()
 
 
 def _print_string(fout):
     print("--print string--", reg[REGS.get("_a0")] - STARTING_ADDRESS)
     start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
-    fout.write(bytearray(prog[start_address:]).decode(
-        'utf-8', errors='replace'))
+
+    # Finding the null terminator of the string
+    end_address = start_address
+    while prog[end_address] != 0:
+        end_address += 1
+
+    string_to_write = bytearray(
+        prog[start_address:end_address])
+    fout.write(string_to_write)
     fout.flush()
 
 
@@ -506,7 +513,7 @@ def _exit(to_exit):
 
 def _print_char(fout):
     print("--print char--")
-    fout.write(chr(reg[REGS.get("_a0")]))
+    fout.write(chr(reg[REGS.get("_a0")]).encode('ascii'))
     fout.flush()
 
 

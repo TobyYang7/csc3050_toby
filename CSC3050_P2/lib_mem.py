@@ -107,7 +107,7 @@ def data_handler(file_name):
                             length += 1
                         elif contin_bs != 0:
                             prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = get_char(line[i])
+                                 length] = ord(get_char(line[i]))
                             length += 1
                             contin_bs = 0
 
@@ -164,7 +164,8 @@ def data_handler(file_name):
                             contin_bs = 0
                     elif line[i] != '\\':
                         if contin_bs == 0:
-                            prog[TEXT_SIZE + STATIC_DATA + length] = line[i]
+                            prog[TEXT_SIZE + STATIC_DATA +
+                                 length] = ord(line[i])
                             length += 1
                         elif contin_bs != 0:
                             prog[TEXT_SIZE + STATIC_DATA +
@@ -173,7 +174,8 @@ def data_handler(file_name):
                             contin_bs = 0
 
                 if contin_bs % 2 != 0:
-                    prog[TEXT_SIZE + STATIC_DATA + length] = get_char(line[-1])
+                    prog[TEXT_SIZE + STATIC_DATA +
+                         length] = ord(get_char(line[-1]))
                     contin_bs = 0
                 elif contin_bs % 2 == 0:
                     prog[TEXT_SIZE + STATIC_DATA + length] = line[-1]

@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     # open file of [fileName].in and [fileName].out
     infile = open(argv[4], 'r')
-    outfile = open(argv[5], 'w')
+    outfile = open(argv[5], 'wb')
 
     # initialize essential value
     return_val = 0
@@ -61,9 +61,9 @@ if __name__ == '__main__':
 
         if True in flag:
             print("==============exit===================")
+            print("--return--", flag[1])
             break
 
-    print("--return--", flag[1])
     checkpoint_memory(total_ins)
     checkpoint_register(total_ins)
 

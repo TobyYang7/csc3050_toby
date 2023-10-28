@@ -36,18 +36,20 @@ if __name__ == '__main__':
 
     # initialize essential value
     return_val = 0
-    to_exit = False
     curr_ins = 0
     total_ins = 0
+    to_exit = False
 
     # start simulation
     while curr_ins >= 0 and curr_ins < len(my_ins):
+        # print("--to exit--", to_exit)
         # check if the instruction needs to be dumped
         checkpoint_memory(total_ins)
         checkpoint_register(total_ins)
 
         # syscall: _exit() || _exit2()
         if to_exit:
+            print("==============exit===================")
             break
 
         inst = my_ins[curr_ins]

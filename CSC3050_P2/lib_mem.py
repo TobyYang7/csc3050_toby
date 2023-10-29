@@ -14,34 +14,29 @@ def checkpoint_memory(ins_count):
     if ins_count not in checkpoints:
         # print("--mem count not in--", ins_count)
         return
-    print("--mem change--", ins_count)
+    # print("--mem change--", ins_count)
     name = f"memory_{ins_count}.bin"
     with open(name, "wb") as fp:
-        fp.write(prog[:0x600000])
+        fp.write(mem[:0x600000])
 
 
 def checkpoint_register(ins_count):
     if ins_count not in checkpoints:
         return
-    print("--reg change--", ins_count)
+    # print("--reg change--", ins_count)
     name = f"register_{ins_count}.bin"
     with open(name, "wb") as fp:
         fp.write(struct.pack('i' * len(reg), *reg))
 
 
 def data_handler(file_name):
-    global STATIC_DATA, prog
+    global STATIC_DATA, mem
 
     infile = open(file_name, 'r')
     line = ""
     data_type = ""
-    quantity = ""
-    my_hex = ""
     nums = []
-    ss = ""
     num = 0
-    ch = ""
-    ptr = bytearray()
     length = 0
     end = 0
     contin_bs = 0
@@ -59,10 +54,12 @@ def data_handler(file_name):
         line = line.strip()
 
         if ".data" in line:
+            print(">>data>>")
             at_dot_data = True
             continue
 
         if ".text" in line:
+            print(">>text>>")
             at_dot_text = True
             break
 
@@ -70,6 +67,7 @@ def data_handler(file_name):
             data_type = line[:line.find("\"")]
 
             if ".asciiz" in data_type:
+                print(">>asciiz>>")
                 line = line[line.find("\"") + 1:]
                 end = 0
 
@@ -88,7 +86,7 @@ def data_handler(file_name):
                         if contin_bs % 2 == 1:
                             continue
                         else:
-                            prog[TEXT_SIZE + STATIC_DATA + length] = line[i]
+                            mem[TEXT_SIZE + STATIC_DATA + length] = line[i]
                             length += 1
                             contin_bs = 0
                     elif line[i] == '\\' and line[i + 1] != '\\':
@@ -96,31 +94,35 @@ def data_handler(file_name):
                         if contin_bs % 2 == 1:
                             continue
                         else:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = get_char(line[i])
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = get_char(line[i])
                             length += 1
                             contin_bs = 0
                     elif line[i] != '\\':
                         if contin_bs == 0:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = ord(line[i])
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = ord(line[i])
                             length += 1
                         elif contin_bs != 0:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = ord(get_char(line[i]))
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = ord(get_char(line[i]))
                             length += 1
                             contin_bs = 0
 
                 if contin_bs % 2 != 0:
-                    prog[TEXT_SIZE + STATIC_DATA +
-                         length] = ord(get_char(line[-1]))
+                    print(hex(TEXT_SIZE+STATIC_DATA+length),
+                          ord(get_char(line[-1])))
+                    mem[TEXT_SIZE + STATIC_DATA +
+                        length] = ord(get_char(line[-1]))
                     contin_bs = 0
                 elif contin_bs % 2 == 0:
-                    prog[TEXT_SIZE + STATIC_DATA + length] = ord(line[-1])
+                    print(hex(TEXT_SIZE+STATIC_DATA+length),
+                          ord(line[-1]))
+                    mem[TEXT_SIZE + STATIC_DATA + length] = ord(line[-1])
                     contin_bs = 0
 
                 length += 1
-                prog[TEXT_SIZE + STATIC_DATA + length] = ord('\0')
+                mem[TEXT_SIZE + STATIC_DATA + length] = ord('\0')
                 length += 1
 
                 if length % 4 == 0:
@@ -132,6 +134,7 @@ def data_handler(file_name):
                 continue
 
             if ".ascii" in data_type:
+                print(">>ascii>>")
                 line = line[line.find("\"") + 1:]
                 end = 0
 
@@ -150,7 +153,7 @@ def data_handler(file_name):
                         if contin_bs % 2 == 1:
                             continue
                         else:
-                            prog[TEXT_SIZE + STATIC_DATA + length] = line[i]
+                            mem[TEXT_SIZE + STATIC_DATA + length] = line[i]
                             length += 1
                             contin_bs = 0
                     elif line[i] == '\\' and line[i + 1] != '\\':
@@ -158,27 +161,31 @@ def data_handler(file_name):
                         if contin_bs % 2 == 1:
                             continue
                         else:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = get_char(line[i])
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = get_char(line[i])
                             length += 1
                             contin_bs = 0
                     elif line[i] != '\\':
                         if contin_bs == 0:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = ord(line[i])
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = ord(line[i])
                             length += 1
                         elif contin_bs != 0:
-                            prog[TEXT_SIZE + STATIC_DATA +
-                                 length] = get_char(line[i])
+                            mem[TEXT_SIZE + STATIC_DATA +
+                                length] = get_char(line[i])
                             length += 1
                             contin_bs = 0
 
                 if contin_bs % 2 != 0:
-                    prog[TEXT_SIZE + STATIC_DATA +
-                         length] = ord(get_char(line[-1]))
+                    print(hex(TEXT_SIZE+STATIC_DATA+length),
+                          ord(get_char(line[-1])))
+                    mem[TEXT_SIZE + STATIC_DATA +
+                        length] = ord(get_char(line[-1]))
                     contin_bs = 0
                 elif contin_bs % 2 == 0:
-                    prog[TEXT_SIZE + STATIC_DATA + length] = line[-1]
+                    print(hex(TEXT_SIZE+STATIC_DATA+length),
+                          ord(line[-1]))
+                    mem[TEXT_SIZE + STATIC_DATA + length] = line[-1]
                     contin_bs = 0
 
                 length += 1
@@ -192,6 +199,7 @@ def data_handler(file_name):
                 continue
 
             if ".word" in line:
+                print(">>word>>")
                 line = line[line.find(".word") + 5:].strip()
                 nums = line.replace(',', ' ').split()
 
@@ -204,18 +212,19 @@ def data_handler(file_name):
                     print("--word num--", num)
 
                     ptr_index = TEXT_SIZE + STATIC_DATA
-                    if ptr_index + 4 > len(prog):
+                    if ptr_index + 4 > len(mem):
                         print(
                             f"Not enough space in prog at index {ptr_index} to store the number {num}")
                         continue
 
-                    prog[ptr_index] = num & 0xff
-                    prog[ptr_index + 1] = (num >> 8) & 0xff
-                    prog[ptr_index + 2] = (num >> 16) & 0xff
-                    prog[ptr_index + 3] = (num >> 24) & 0xff
+                    mem[ptr_index] = num & 0xff
+                    mem[ptr_index + 1] = (num >> 8) & 0xff
+                    mem[ptr_index + 2] = (num >> 16) & 0xff
+                    mem[ptr_index + 3] = (num >> 24) & 0xff
                     STATIC_DATA += 4
 
             if ".byte" in data_type:
+                print(">>byte>>")
                 line = line[line.find(".byte") + 6:]
                 # ss = line
                 nums = line.split(",")
@@ -227,7 +236,7 @@ def data_handler(file_name):
                 length = len(nums)
 
                 for i in range(length):
-                    prog[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
+                    mem[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
                     STATIC_DATA += 1
 
                 if length % 4 != 0:
@@ -236,6 +245,7 @@ def data_handler(file_name):
                 continue
 
             if ".half" in data_type:
+                print(">>half>>")
                 line = line[line.find(".half") + 6:]
                 # ss = line
                 nums = line.split(",")
@@ -247,9 +257,9 @@ def data_handler(file_name):
                 length = len(nums)
 
                 for i in range(length):
-                    prog[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
-                    prog[TEXT_SIZE + STATIC_DATA +
-                         1] = (int(nums[i]) >> 8) & 0xff
+                    mem[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
+                    mem[TEXT_SIZE + STATIC_DATA +
+                        1] = (int(nums[i]) >> 8) & 0xff
                     STATIC_DATA += 2
 
                 if length % 2 != 0:
@@ -278,8 +288,8 @@ def text_seg(file_name):
         my_ins.append(line)
 
         for i in range(3, -1, -1):
-            prog[machine_code_size + 3 -
-                 i] = bin_to_num(line[8 * i:8 * (i + 1)])
+            mem[machine_code_size + 3 -
+                i] = bin_to_num(line[8 * i:8 * (i + 1)])
 
         machine_code_size += 4
 

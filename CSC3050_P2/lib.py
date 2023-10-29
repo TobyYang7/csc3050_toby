@@ -8,7 +8,7 @@ TEXT_SIZE = 1 * 1024 * 1024
 STARTING_ADDRESS = 0x400000
 STATIC_DATA = 0
 
-prog = bytearray(MEMORY_SIZE)
+mem = bytearray(MEMORY_SIZE)
 reg = [0] * (32 + 3)
 sp = 0xA00000
 gp = 0x508000
@@ -335,18 +335,18 @@ def _bne(rs, rt, imm):
 
 
 def _lb(rt, rs, imm):
-    reg[rt] = int(prog[reg[rs] + imm - STARTING_ADDRESS])
+    reg[rt] = int(mem[reg[rs] + imm - STARTING_ADDRESS])
     print("--lb--", reg[rs], imm, reg[rt])
 
 
 def _lbu(rt, rs, imm):
-    reg[rt] = prog[reg[rs] + imm - STARTING_ADDRESS]
+    reg[rt] = mem[reg[rs] + imm - STARTING_ADDRESS]
     print("--lbu--", reg[rs], imm, reg[rt])
 
 
 def _lh(rs, rt, imm):
-    hi = prog[reg[rs] + imm - STARTING_ADDRESS + 1]
-    lo = prog[reg[rs] + imm - STARTING_ADDRESS]
+    hi = mem[reg[rs] + imm - STARTING_ADDRESS + 1]
+    lo = mem[reg[rs] + imm - STARTING_ADDRESS]
     reg[rt] = lo | (hi << 8)
     if hi & 0x80:
         reg[rt] |= 0xffff << 16
@@ -354,8 +354,8 @@ def _lh(rs, rt, imm):
 
 
 def _lhu(rs, rt, imm):
-    hi = prog[reg[rs] + imm - STARTING_ADDRESS + 1]
-    lo = prog[reg[rs] + imm - STARTING_ADDRESS]
+    hi = mem[reg[rs] + imm - STARTING_ADDRESS + 1]
+    lo = mem[reg[rs] + imm - STARTING_ADDRESS]
     reg[rt] = lo | (hi << 8)
     print("--lhu--", reg[rs], imm, reg[rt])
 
@@ -367,7 +367,7 @@ def _lui(rt, imm):
 
 def _lw(rs, rt, imm):
     idx = reg[rs] + imm - STARTING_ADDRESS
-    base = bytearray(prog[idx:idx + 4])  # 获取prog中的4个字节作为bytearray
+    base = bytearray(mem[idx:idx + 4])  # 获取prog中的4个字节作为bytearray
     reg[rt] = base[0] | (base[1] << 8) | (base[2] << 16) | (base[3] << 24)
     print("--lw--", reg[rs], imm, reg[rt])
 
@@ -378,7 +378,7 @@ def _ori(rs, rt, imm):
 
 
 def _sb(rs, rt, imm):
-    prog[reg[rs] + imm - STARTING_ADDRESS] = reg[rt] & 0xff
+    mem[reg[rs] + imm - STARTING_ADDRESS] = reg[rt] & 0xff
     print("--sb--", reg[rs], reg[rt], imm)
 
 
@@ -393,7 +393,7 @@ def _sltiu(rs, rt, imm):
 
 
 def _sh(rs, rt, imm):
-    base = prog + reg[rs] + imm - STARTING_ADDRESS
+    base = mem + reg[rs] + imm - STARTING_ADDRESS
     base[0] = reg[rt] & 0xff
     base[1] = reg[rt] >> 8
     print("--sh--", reg[rs], reg[rt], imm)
@@ -405,10 +405,10 @@ def _sw(rs, rt, imm):
         imm = imm - 0x10000
     print("--sw--", reg[rs], reg[rt], imm)
     base_index = reg[rs] + imm - STARTING_ADDRESS
-    prog[base_index] = reg[rt] & 0xff
-    prog[base_index + 1] = (reg[rt] >> 8) & 0xff
-    prog[base_index + 2] = (reg[rt] >> 16) & 0xff
-    prog[base_index + 3] = (reg[rt] >> 24) & 0xff
+    mem[base_index] = reg[rt] & 0xff
+    mem[base_index + 1] = (reg[rt] >> 8) & 0xff
+    mem[base_index + 2] = (reg[rt] >> 16) & 0xff
+    mem[base_index + 3] = (reg[rt] >> 24) & 0xff
 
 
 def _xori(rs, rt, imm):
@@ -421,7 +421,7 @@ def _lwl(rs, rt, imm):
     lower_bound = idx & (~3)
     for i in range(idx, lower_bound - 1, -1):
         reg[rt] &= ~(0xff << (i % 4) * 8)
-        reg[rt] |= prog[i] << (i % 4) * 8
+        reg[rt] |= mem[i] << (i % 4) * 8
     print("--lwl--", reg[rs], imm, reg[rt])
 
 
@@ -430,7 +430,7 @@ def _lwr(rs, rt, imm):
     upper_bound = (idx + 4) & (~3)
     for i in range(idx, upper_bound):
         reg[rt] &= ~(0xff << (i % 4) * 8)
-        reg[rt] |= prog[i] << (i % 4) * 8
+        reg[rt] |= mem[i] << (i % 4) * 8
     print("--lwr--", reg[rs], imm, reg[rt])
 
 
@@ -438,7 +438,7 @@ def _swl(rs, rt, imm):
     idx = reg[rs] + imm - STARTING_ADDRESS
     lower_bound = idx & (~3)
     for i in range(idx, lower_bound - 1, -1):
-        prog[i] = (reg[rt] >> (i % 4) * 8) & 0xff
+        mem[i] = (reg[rt] >> (i % 4) * 8) & 0xff
     print("--swl--", reg[rs], imm, reg[rt])
 
 
@@ -446,8 +446,8 @@ def _swr(rs, rt, imm):
     idx = reg[rs] + imm - STARTING_ADDRESS
     upper_bound = (idx + 4) & (~3)
     for i in range(idx, upper_bound):
-        prog[i] = (reg[rt] >> (i % 4) * 8) & 0xff
-    print("--swr--", reg[rs], reg[rt], imm, prog)
+        mem[i] = (reg[rt] >> (i % 4) * 8) & 0xff
+    print("--swr--", reg[rs], reg[rt], imm, mem)
 
 
 def _j(target):
@@ -474,11 +474,11 @@ def _print_string(fout):
 
     # Finding the null terminator of the string
     end_address = start_address
-    while prog[end_address] != 0:
+    while mem[end_address] != 0:
         end_address += 1
 
     string_to_write = bytearray(
-        prog[start_address:end_address])
+        mem[start_address:end_address])
 
     print("--print string--", hex(start_address), hex(end_address))
 
@@ -507,7 +507,7 @@ def _read_string(fin):
     # 将字节数组分配给prog
     prog_start = reg[REGS.get("_a0")] - STARTING_ADDRESS
     prog_end = prog_start + len(byte_array)
-    prog[prog_start:prog_end] = byte_array
+    mem[prog_start:prog_end] = byte_array
 
 
 def _sbrk():
@@ -536,7 +536,7 @@ def _read_char(fin):
 def _open():
     file_name_address = reg[REGS.get("_a0")]
     start_idx = file_name_address - STARTING_ADDRESS
-    file_name = bytearray(prog[start_idx:])
+    file_name = bytearray(mem[start_idx:])
 
     # Find the null terminator in the bytearray
     null_idx = file_name.find(0)
@@ -561,13 +561,13 @@ def _read():
 
     if file_descriptor == 0:  # 标准输入
         input_data = os.read(0, size)  # 从标准输入读取数据
-        prog[buffer_address - STARTING_ADDRESS: buffer_address -
-             STARTING_ADDRESS + len(input_data)] = input_data
+        mem[buffer_address - STARTING_ADDRESS: buffer_address -
+            STARTING_ADDRESS + len(input_data)] = input_data
         reg[REGS.get("_v0")] = len(input_data)
     elif file_descriptor == 1 or file_descriptor == 2:  # 防止尝试从标准输出或标准错误读取
         reg[REGS.get("_v0")] = -1
     else:
-        buffer_data = bytes(prog[buffer_address - STARTING_ADDRESS:])
+        buffer_data = bytes(mem[buffer_address - STARTING_ADDRESS:])
         # reg[REGS.get("_v0")] = os.read(
         #     file_descriptor, buffer_data[:int(size)])
 
@@ -582,7 +582,7 @@ def _write():
     size = reg[_a2]
 
     # 获取对prog内存的视图
-    prog_memory_view = memoryview(prog)
+    prog_memory_view = memoryview(mem)
 
     # 构建 data 字节数组，包括终止符
     data = bytes([prog_memory_view[start_idx + i] for i in range(size)])

@@ -11,7 +11,7 @@ if __name__ == '__main__':
     #     print("--argv[%d]--" % i)
     #     print(argv[i])
 
-    prog = bytearray(MEMORY_SIZE)
+    mem = bytearray(MEMORY_SIZE)
     reg[REGS.get("_pc")] = pc
     reg[REGS.get("_gp")] = gp
     reg[REGS.get("_sp")] = sp
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # load in checkpoints
     init_checkpoints(argv[3])
     print("--checkpoints--", checkpoints)
-    print("---mem len---", len(prog))
+    print("---mem len---", len(mem))
 
     print("=========init==================")
     print(reg)

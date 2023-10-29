@@ -297,11 +297,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         sa = bin_to_num(machine_code[21:26])
         func = bin_to_num(machine_code[26:32])
 
-        print("==============000000=================")
+        print("=========000000================")
         # print("--rs rt imm--", rs, rt, imm)
         print(reg)
         print("--sp--", reg[REGS.get("_sp")])
-        print("=====================================")
+        print("===============================")
 
         switch = {
             0b100000: lambda: _add(rs, rt, rd),
@@ -340,11 +340,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
     elif op_code == "000010" or op_code == "000011":
         target = bin_to_num(machine_code[6:32])
 
-        print("===============jump==================")
+        print("==========jump=================")
         # print("--rs rt imm--", rs, rt, imm)
         print(reg)
         print("--sp--", reg[REGS.get("_sp")])
-        print("=====================================")
+        print("===============================")
 
         if op_code == "000010":
             _j(target)
@@ -356,11 +356,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         rt = bin_to_num(machine_code[11:16])
         imm = bin_to_num(machine_code[16:32])
 
-        print("===============case3=================")
+        print("==========case3================")
         print("--rs rt imm--", rs, rt, imm)
         print(reg)
         print("--sp--", reg[REGS.get("_sp")])
-        print("=====================================")
+        print("===============================")
 
         switch = {
             0b001000: lambda: _addi(rt, rs, imm),

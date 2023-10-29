@@ -22,9 +22,9 @@ if __name__ == '__main__':
     print("--checkpoints--", checkpoints)
     print("---mem len---", len(prog))
 
-    print("==============init===================")
+    print("=========init==================")
     print(reg)
-    print("=====================================")
+    print("===============================")
 
     # load .data and .text segment in memory
     data_handler(argv[1])
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         checkpoint_register(total_ins)
 
         # if True in flag:
-        #     print("==============exit===================")
+        #     print("=========exit============= ===")
         #     break
 
         inst = my_ins[curr_ins]
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         total_ins += 1
 
         if True in flag:
-            print("==============exit===================")
+            print("=========exit==================")
             print("--return--", flag[1])
             break
 

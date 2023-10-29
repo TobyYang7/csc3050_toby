@@ -469,7 +469,6 @@ def _print_int(fout):
 
 
 def _print_string(fout):
-    print("--print string--", reg[REGS.get("_a0")] - STARTING_ADDRESS)
     start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
 
     # Finding the null terminator of the string
@@ -479,6 +478,8 @@ def _print_string(fout):
 
     string_to_write = bytearray(
         prog[start_address:end_address])
+
+    print("--print string--", hex(start_address), hex(end_address))
     fout.write(string_to_write)
     fout.flush()
 
@@ -495,8 +496,15 @@ def _read_int(fin):
 def _read_string(fin):
     str_len = reg[REGS.get("_a1")]
     str_input = fin.read(str_len)
-    prog[reg[REGS.get("_a0")] - STARTING_ADDRESS:reg[REGS.get("_a0")] -
-         STARTING_ADDRESS + str_len] = str_input
+    print("--read string--", str_input)
+
+    # 将字符串编码为字节数组
+    byte_array = bytearray(str_input.encode('utf-8'))
+
+    # 将字节数组分配给prog
+    prog_start = reg[REGS.get("_a0")] - STARTING_ADDRESS
+    prog_end = prog_start + len(byte_array)
+    prog[prog_start:prog_end] = byte_array
 
 
 def _sbrk():
@@ -523,26 +531,97 @@ def _read_char(fin):
 
 
 def _open():
-    print("--open--")
-    reg[REGS.get("_a0")] = os.open(prog + reg[REGS.get("_a0")] -
-                                   STARTING_ADDRESS, reg[REGS.get("_a1")], reg[REGS._a2])
+    file_name_address = reg[REGS.get("_a0")]
+    start_idx = file_name_address - STARTING_ADDRESS
+    file_name = bytearray(prog[start_idx:])
+
+    # Find the null terminator in the bytearray
+    null_idx = file_name.find(0)
+    if null_idx != -1:
+        file_name = file_name[:null_idx].decode('utf-8')
+    else:
+        file_name = file_name.decode('utf-8')
+
+    flag = reg[REGS.get("_a1")]
+    mode = reg[REGS.get("_a2")]
+    print("--open--", file_name, flag, mode)
+    file_descriptor = os.open(file_name, flag, mode)
+    reg[REGS.get("_v0")] = file_descriptor
 
 
 def _read():
-    print("--read--")
-    reg[REGS.get("_a0")] = os.read(reg[REGS.get("_a0")], prog +
-                                   reg[REGS.get("_a1")] - STARTING_ADDRESS, reg[REGS._a2])
+    file_descriptor = reg[REGS.get("_a0")]
+    buffer_address = reg[REGS.get("_a1")]
+    size = reg[REGS.get("_a2")]
+
+    print("--read--", hex(file_descriptor), hex(buffer_address))
+
+    if file_descriptor == 0:  # 标准输入
+        input_data = os.read(0, size)  # 从标准输入读取数据
+        prog[buffer_address - STARTING_ADDRESS: buffer_address -
+             STARTING_ADDRESS + len(input_data)] = input_data
+        reg[REGS.get("_v0")] = len(input_data)
+    elif file_descriptor == 1 or file_descriptor == 2:  # 防止尝试从标准输出或标准错误读取
+        reg[REGS.get("_v0")] = -1
+    else:
+        buffer_data = bytes(prog[buffer_address - STARTING_ADDRESS:])
+        # reg[REGS.get("_v0")] = os.read(
+        #     file_descriptor, buffer_data[:int(size)])
 
 
 def _write():
-    print("--write--")
-    reg[REGS.get("_a0")] = os.write(reg[REGS.get("_a0")], prog +
-                                    reg[REGS.get("_a1")] - STARTING_ADDRESS, reg[REGS._a2])
+    _a0 = REGS.get("_a0")
+    _a1 = REGS.get("_a1")
+    _a2 = REGS.get("_a2")
+
+    fd = reg[_a0]
+    start_idx = reg[_a1] - STARTING_ADDRESS
+    size = reg[_a2]
+
+    # 获取对prog内存的视图
+    prog_memory_view = memoryview(prog)
+
+    # 构建 data 字节数组，包括终止符
+    data = bytes([prog_memory_view[start_idx + i] for i in range(size)])
+
+    # 寻找终止符的索引
+    null_terminator_index = data.find(b'\0')
+
+    # 如果找到终止符，则截断 data 到终止符之前
+    if null_terminator_index != -1:
+        data = data[:null_terminator_index + 1]
+
+    print("--write--", hex(fd), data)
+
+    # 写入文件
+    if data:
+        try:
+            bytes_written = os.write(fd, data)
+            print("Bytes written:", bytes_written)
+            reg[_a0] = bytes_written
+        except OSError as e:
+            print("Error writing to file:", e)
+            reg[_a0] = -1
+    else:
+        print("No data to write.")
 
 
 def _close():
-    print("--close--")
-    os.close(reg[REGS.get("_a0")])
+    _a0 = REGS.get("_a0")
+    fd = reg[_a0]
+
+    print("--close--", "File Descriptor:", hex(fd))
+
+    # 检查文件描述符的有效性
+    if fd < 0:
+        print("Invalid file descriptor:", fd)
+        return
+
+    try:
+        os.close(fd)
+        print("File descriptor closed successfully.")
+    except OSError as e:
+        print("Error closing file descriptor:", e)
 
 
 def _exit2(to_exit):

@@ -216,19 +216,18 @@ def data_handler(file_name):
                     STATIC_DATA += 4
 
             if ".byte" in data_type:
-                line = line[line.find(".byte") + 5:]
-                ss = line
-                nums = []
+                line = line[line.find(".byte") + 6:]
+                # ss = line
+                nums = line.split(",")
 
-                while ss:
-                    num, ss = ss.split(maxsplit=1)
-                    nums.append(int(num))
+                # while ss:
+                #     num, ss = ss.split(maxsplit=1)
+                #     nums.append(int(num))
 
                 length = len(nums)
 
                 for i in range(length):
-                    ptr = prog + TEXT_SIZE + STATIC_DATA
-                    ptr[0] = nums[i] & 0xff
+                    prog[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
                     STATIC_DATA += 1
 
                 if length % 4 != 0:
@@ -237,20 +236,20 @@ def data_handler(file_name):
                 continue
 
             if ".half" in data_type:
-                line = line[line.find(".half") + 5:]
-                ss = line
-                nums = []
+                line = line[line.find(".half") + 6:]
+                # ss = line
+                nums = line.split(",")
 
-                while ss:
-                    num, ss = ss.split(maxsplit=1)
-                    nums.append(int(num))
+                # while ss:
+                #     num, ss = ss.split(maxsplit=1)
+                #     nums.append(int(num))
 
                 length = len(nums)
 
                 for i in range(length):
-                    ptr = prog + TEXT_SIZE + STATIC_DATA
-                    ptr[0] = nums[i] & 0xff
-                    ptr[1] = (nums[i] >> 8) & 0xff
+                    prog[TEXT_SIZE + STATIC_DATA] = int(nums[i]) & 0xff
+                    prog[TEXT_SIZE + STATIC_DATA +
+                         1] = (int(nums[i]) >> 8) & 0xff
                     STATIC_DATA += 2
 
                 if length % 2 != 0:
@@ -297,11 +296,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         sa = bin_to_num(machine_code[21:26])
         func = bin_to_num(machine_code[26:32])
 
-        print("=========000000================")
+        # print("=========000000================")
         # print("--rs rt imm--", rs, rt, imm)
-        print(reg)
-        print("--sp--", reg[REGS.get("_sp")])
-        print("===============================")
+        # print(reg)
+        # print("--sp--", reg[REGS.get("_sp")])
+        # print("===============================")
 
         switch = {
             0b100000: lambda: _add(rs, rt, rd),
@@ -340,11 +339,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
     elif op_code == "000010" or op_code == "000011":
         target = bin_to_num(machine_code[6:32])
 
-        print("==========jump=================")
+        # print("==========jump=================")
         # print("--rs rt imm--", rs, rt, imm)
-        print(reg)
-        print("--sp--", reg[REGS.get("_sp")])
-        print("===============================")
+        # print(reg)
+        # print("--sp--", reg[REGS.get("_sp")])
+        # print("===============================")
 
         if op_code == "000010":
             _j(target)
@@ -356,11 +355,11 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         rt = bin_to_num(machine_code[11:16])
         imm = bin_to_num(machine_code[16:32])
 
-        print("==========case3================")
-        print("--rs rt imm--", rs, rt, imm)
-        print(reg)
-        print("--sp--", reg[REGS.get("_sp")])
-        print("===============================")
+        # print("==========case3================")
+        # print("--rs rt imm--", rs, rt, imm)
+        # print(reg)
+        # print("--sp--", reg[REGS.get("_sp")])
+        # print("===============================")
 
         switch = {
             0b001000: lambda: _addi(rt, rs, imm),

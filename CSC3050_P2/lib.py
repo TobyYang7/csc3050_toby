@@ -299,6 +299,8 @@ def _andi(rt, rs, imm):
 
 
 def _beq(rs, rt, imm):
+    if imm & 0x8000:
+        imm = imm - 0x10000
     if reg[rs] == reg[rt]:
         reg[REGS.get("_pc")] += imm * 4
         print("--beq--", reg[rs], reg[rt], imm, reg[REGS.get("_pc")])
@@ -317,6 +319,8 @@ def _bgtz(rs, imm):
 
 
 def _blez(rs, imm):
+    if imm & 0x8000:
+        imm = imm - 0x10000
     if int(reg[rs]) <= 0:
         reg[REGS.get("_pc")] += imm * 4
         print("--blez--", reg[rs], imm, reg[REGS.get("_pc")])

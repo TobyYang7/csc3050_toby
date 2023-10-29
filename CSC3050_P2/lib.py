@@ -464,6 +464,7 @@ def _jal(target):
 
 
 def _print_int(fout):
+    print("--print int--", int(reg[REGS.get("_a0")]))
     fout.write(str(int(reg[REGS.get("_a0")])).encode('ascii'))
     fout.flush()
 
@@ -480,6 +481,8 @@ def _print_string(fout):
         prog[start_address:end_address])
 
     print("--print string--", hex(start_address), hex(end_address))
+
+    print(string_to_write.decode('utf-8'))
     fout.write(string_to_write)
     fout.flush()
 

@@ -638,9 +638,8 @@ def _exit2(to_exit):
 
 
 def _syscall(fin, fout, to_exit, return_val):
-    print("--sys--", REGS.get("_v0"))
     syscall_number = reg[int(REGS.get("_v0"))]
-    print("--sys num--", reg[REGS.get("_v0")])
+    print("====syscall====", reg[REGS.get("_v0")])
 
     if syscall_number == 1:
         _print_int(fout)

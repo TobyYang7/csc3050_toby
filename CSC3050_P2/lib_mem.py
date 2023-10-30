@@ -2,6 +2,7 @@ from lib import *
 from lib import _add, _addu, _and, _div, _divu, _jalr, _jr, _mfhi, _mflo, _mthi, _mtlo, _mult, _multu, _nor, _or, _sll, _sllv, _slt, _sltu, _sra, _srav, _srl, _srlv, _sub, _subu, _xor
 from lib import _addi, _addiu, _andi, _beq, _bgez, _bgtz, _blez, _bltz, _bne, _lb, _lbu, _lh, _lhu, _lui, _lw, _ori, _sb, _slti, _sltiu, _sh, _sw, _xori
 from lib import _lwl, _lwr, _swl, _swr, _j, _jal, _print_int, _print_string, _read_int, _read_string, _sbrk, _exit, _print_char, _read_char, _open, _read, _write, _close, _exit2, _syscall
+count = 0
 
 
 def init_checkpoints(checkpoint_file):
@@ -297,8 +298,10 @@ def text_seg(file_name):
 
 
 def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
+    global count
     res = []
     op_code = machine_code[:6]
+    print(">>", reg[2], reg[4], reg[17])
     if op_code == "000000":
         rs = bin_to_num(machine_code[6:11])
         rt = bin_to_num(machine_code[11:16])
@@ -400,4 +403,7 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         }
 
         switch.get(bin_to_num(op_code), lambda: None)()
+    if count in checkpoints:
+        print("=========check: %d=============" % count)
+    count += 1
     return res

@@ -688,6 +688,8 @@ def _syscall(fin, fout, to_exit, return_val):
 def init_checkpoints(checkpoint_file):
     with open(checkpoint_file, "r") as fp:
         for line in fp:
+            if line == "\n":
+                continue
             checkpoints.add(int(line.strip()))
 
 

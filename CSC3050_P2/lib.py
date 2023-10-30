@@ -518,7 +518,6 @@ def _sbrk():
     global STATIC_DATA
     print("--sbrk--")
     reg[REGS.get("_v0")] = STARTING_ADDRESS + STATIC_DATA + TEXT_SIZE
-    print("before:", STATIC_DATA)
     STATIC_DATA += reg[REGS.get("_a0")]
 
 
@@ -545,9 +544,11 @@ def _open():
     file_name = bytearray(mem[start_idx:])
 
     # Find the null terminator in the bytearray
-    null_idx = file_name.find(0)
+    null_idx = file_name.find(0)  # fix: 54
     if null_idx != -1:
-        file_name = file_name[:null_idx].decode('utf-8')
+        tmp = file_name[:null_idx]
+        print("--open--", tmp)
+        file_name = tmp.decode('utf-8')
     else:
         file_name = file_name.decode('utf-8')
 
@@ -555,7 +556,7 @@ def _open():
     mode = reg[REGS.get("_a2")]
     print("--open--", file_name, flag, mode)
     file_descriptor = os.open(file_name, flag, mode)
-    reg[REGS.get("_v0")] = file_descriptor
+    reg[REGS.get("_a0")] = file_descriptor
 
 
 def _read():
@@ -574,63 +575,26 @@ def _read():
         reg[REGS.get("_v0")] = -1
     else:
         buffer_data = bytes(mem[buffer_address - STARTING_ADDRESS:])
-        # reg[REGS.get("_v0")] = os.read(
-        #     file_descriptor, buffer_data[:int(size)])
 
 
 def _write():
-    _a0 = REGS.get("_a0")
-    _a1 = REGS.get("_a1")
-    _a2 = REGS.get("_a2")
+    fd = REGS.get("_a0")
+    buffer = reg[REGS.get("_a1")] - STARTING_ADDRESS
+    length = reg[REGS.get("_a2")]
 
-    fd = reg[_a0]
-    start_idx = reg[_a1] - STARTING_ADDRESS
-    size = reg[_a2]
+    print("--write--")
+    print(fd, buffer, length)
 
-    # 获取对prog内存的视图
-    prog_memory_view = memoryview(mem)
-
-    # 构建 data 字节数组，包括终止符
-    data = bytes([prog_memory_view[start_idx + i] for i in range(size)])
-
-    # 寻找终止符的索引
-    null_terminator_index = data.find(b'\0')
-
-    # 如果找到终止符，则截断 data 到终止符之前
-    if null_terminator_index != -1:
-        data = data[:null_terminator_index + 1]
-
-    print("--write--", hex(fd), data)
-
-    # 写入文件
-    if data:
-        try:
-            bytes_written = os.write(fd, data)
-            print("Bytes written:", bytes_written)
-            reg[_a0] = bytes_written
-        except OSError as e:
-            print("Error writing to file:", e)
-            reg[_a0] = -1
-    else:
-        print("No data to write.")
+    data = mem[buffer:buffer + length]
+    reg[REGS.get("_a0")] = os.write(fd, data)
 
 
 def _close():
     _a0 = REGS.get("_a0")
     fd = reg[_a0]
 
-    print("--close--", "File Descriptor:", hex(fd))
-
-    # 检查文件描述符的有效性
-    if fd < 0:
-        print("Invalid file descriptor:", fd)
-        return
-
-    try:
-        os.close(fd)
-        print("File descriptor closed successfully.")
-    except OSError as e:
-        print("Error closing file descriptor:", e)
+    print("--close--", hex(fd))
+    os.close(fd)
 
 
 def _exit2(to_exit):
@@ -972,9 +936,6 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
     global count
     res = []
     op_code = machine_code[:6]
-    print(">>", count, ">> v0:%d a0:%d s1:%d" %
-          (reg[2], reg[4], reg[17]))
-    print(STATIC_DATA)
     if op_code == "000000":
         rs = bin_to_num(machine_code[6:11])
         rt = bin_to_num(machine_code[11:16])

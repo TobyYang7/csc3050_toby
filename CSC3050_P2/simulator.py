@@ -42,14 +42,12 @@ if __name__ == '__main__':
 
     # start simulation
     while curr_ins >= 0 and curr_ins < len(my_ins):
+        print("-------------------%d---------" % curr_ins)
+        print("a1:%d t0:%d" % (reg[5], reg[8]))
         # print("--to exit--", to_exit)
         # check if the instruction needs to be dumped
         checkpoint_memory(total_ins)
         checkpoint_register(total_ins)
-
-        # if True in flag:
-        #     print("=========exit============= ===")
-        #     break
 
         inst = my_ins[curr_ins]
         reg[REGS.get("_pc")] += 4

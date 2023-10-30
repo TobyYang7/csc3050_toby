@@ -21,8 +21,8 @@ def write_to_txt(reg_data, filename):
 
 
 # 使用示例
-filename = "/home/parallels/toby_dev/csc3050_toby/CSC3050_P2/register_12.bin"  # 替换成你的实际文件名
+filename = "/home/parallels/toby_dev/csc3050_toby/CSC3050_P2/Example_test_cases/many/correct_dump/register_97.bin"  # 替换成你的实际文件名
 reg_from_file = read_bin_file(filename)
 
-output_filename = "my_12_data.txt"  # 替换成你想要的输出文件名
+output_filename = "reg_97_data.txt"  # 替换成你想要的输出文件名
 write_to_txt(reg_from_file, output_filename)

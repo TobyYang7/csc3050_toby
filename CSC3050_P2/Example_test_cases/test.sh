@@ -1,1 +1,0 @@
-python3 simulator.py test.asm test.txt test_checkpoints.txt test.in test.out

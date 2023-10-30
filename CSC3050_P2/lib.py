@@ -510,15 +510,17 @@ def _read_int(fin):
         print("--read int--", "empty line")
 
 
-def _read_string(fin):
+def _read_string(fin):  # fix
     str_len = reg[REGS.get("_a1")]
     str_input = fin.read(str_len)
+    buffer = reg[REGS.get("_a0")] - STARTING_ADDRESS-1
     print("--read string--", str_input)
-    byte_array = bytearray(str_input.encode('utf-8'))
+    byte_array = bytearray(str_input[:-1].encode('utf-8'))
+    for i in byte_array:
+        print("this byte:", repr(chr(i)))
     # prog_start = reg[REGS.get("_a0")] - STARTING_ADDRESS
     # prog_end = prog_start + len(byte_array)
     # mem[prog_start:prog_end] = byte_array
-    buffer = reg[REGS.get("_a0")] - STARTING_ADDRESS
     mem[buffer:buffer + str_len] = byte_array
 
 
@@ -1081,7 +1083,7 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         }
 
         switch.get(bin_to_num(op_code), lambda: None)()
-    if count in checkpoints:
-        print("=========check: %d=============" % count)
+    # if count in checkpoints:
+    #     print("=========check: %d=============" % count)
     count += 1
     return res

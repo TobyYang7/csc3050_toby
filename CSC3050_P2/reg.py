@@ -1,5 +1,6 @@
 import struct
 from lib import *
+from sys import argv
 
 
 def read_bin_file(filename):
@@ -21,8 +22,15 @@ def write_to_txt(reg_data, filename):
 
 
 # 使用示例
-filename = "/home/parallels/toby_dev/csc3050_toby/CSC3050_P2/Example_test_cases/many/correct_dump/register_97.bin"  # 替换成你的实际文件名
-reg_from_file = read_bin_file(filename)
 
-output_filename = "reg_97_data.txt"  # 替换成你想要的输出文件名
+file = argv[1]
+my = argv[2]
+ins_count = int(argv[3])
+
+reg_from_file = read_bin_file(file)
+output_filename = f"true_reg_{ins_count}.txt"
 write_to_txt(reg_from_file, output_filename)
+
+my_reg_from_file = read_bin_file(my)
+my_output_filename = f"my_{ins_count}.txt"
+write_to_txt(my_reg_from_file, my_output_filename)

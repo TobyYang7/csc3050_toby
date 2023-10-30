@@ -1,3 +1,5 @@
+cd csc3050_toby/CSC3050_P2/
+clear
 python3 simulator.py Example_test_cases/memcpy-hello-world/memcpy-hello-world.asm Example_test_cases/memcpy-hello-world/memcpy-hello-world.txt  Example_test_cases/memcpy-hello-world/memcpy-hello-world_checkpts.txt Example_test_cases/memcpy-hello-world/memcpy-hello-world.in memcpy-hello-world.out
 
 a=12

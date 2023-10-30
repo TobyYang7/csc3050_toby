@@ -1,3 +1,5 @@
+cd csc3050_toby/CSC3050_P2/
+clear
 python3 simulator.py Example_test_cases/lw_sw/lw_sw.asm Example_test_cases/lw_sw/lw_sw.txt Example_test_cases/lw_sw/lw_sw_checkpts.txt Example_test_cases/lw_sw/lw_sw.in lw_sw.out
 
 a=4

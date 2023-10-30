@@ -17,6 +17,7 @@ machine_code_size = 0
 my_ins = []
 checkpoints = set()
 count = 0
+out_file = []
 
 
 REGS = {
@@ -364,9 +365,10 @@ def _lhu(rs, rt, imm):
     print("--lhu--", reg[rs], imm, reg[rt])
 
 
-def _lui(rt, imm):
-    reg[rt] = imm << 16
+def _lui(rt, imm):  # fix
     print("--lui--", imm, reg[rt])
+    imm = imm << 16
+    reg[rt] = imm
 
 
 def _lw(rs, rt, imm):
@@ -469,24 +471,32 @@ def _jal(target):
 
 def _print_int(fout):
     print("--print int--", int(reg[REGS.get("_a0")]))
+    out_file.append(str(int(reg[REGS.get("_a0")])))
     fout.write(str(int(reg[REGS.get("_a0")])).encode('ascii'))
     fout.flush()
 
 
 def _print_string(fout):
+    global out_file
+
     start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
 
     # Finding the null terminator of the string
     end_address = start_address
-    while mem[end_address] != 0:
-        end_address += 1
 
-    string_to_write = bytearray(
-        mem[start_address:end_address])
+    char_count = 0
+    while mem[end_address] != 0:
+        print("this char in: ", hex(end_address), repr(chr(mem[end_address])))
+        end_address += 1
+        char_count += 1
+    print("total char: ", char_count)
+
+    string_to_write = mem[start_address:end_address]
 
     print("--print string--", hex(start_address), hex(end_address))
 
     print(string_to_write.decode('utf-8'))
+    out_file.append(string_to_write.decode('utf-8'))
     fout.write(string_to_write)
     fout.flush()
 
@@ -504,14 +514,12 @@ def _read_string(fin):
     str_len = reg[REGS.get("_a1")]
     str_input = fin.read(str_len)
     print("--read string--", str_input)
-
-    # 将字符串编码为字节数组
     byte_array = bytearray(str_input.encode('utf-8'))
-
-    # 将字节数组分配给prog
-    prog_start = reg[REGS.get("_a0")] - STARTING_ADDRESS
-    prog_end = prog_start + len(byte_array)
-    mem[prog_start:prog_end] = byte_array
+    # prog_start = reg[REGS.get("_a0")] - STARTING_ADDRESS
+    # prog_end = prog_start + len(byte_array)
+    # mem[prog_start:prog_end] = byte_array
+    buffer = reg[REGS.get("_a0")] - STARTING_ADDRESS
+    mem[buffer:buffer + str_len] = byte_array
 
 
 def _sbrk():
@@ -529,6 +537,7 @@ def _exit(to_exit):
 
 def _print_char(fout):
     print("--print char--")
+    out_file.append(chr(reg[REGS.get("_a0")]))
     fout.write(chr(reg[REGS.get("_a0")]).encode('ascii'))
     fout.flush()
 
@@ -1038,7 +1047,7 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         imm = bin_to_num(machine_code[16:32])
 
         # print("==========case3================")
-        # print("--rs rt imm--", rs, rt, imm)
+        print("--rs rt imm--", rs, rt, imm)
         # print(reg)
         # print("--sp--", reg[REGS.get("_sp")])
         # print("===============================")

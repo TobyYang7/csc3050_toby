@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # open file of [fileName].in and [fileName].out
     infile = open(argv[4], 'r')
-    outfile = open(argv[5], 'wb')
+    outfile = open("tmp.out", 'wb')
 
     # initialize essential value
     return_val = 0
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # start simulation
     while curr_ins >= 0 and curr_ins < len(my_ins):
         print("-------------------%d---------" % curr_ins)
-        print("a1:%d t0:%d" % (reg[5], reg[8]))
+        print("a0:%d t0:%d" % (reg[4], reg[8]))
         # print("--to exit--", to_exit)
         # check if the instruction needs to be dumped
         checkpoint_memory(total_ins)
@@ -61,8 +61,17 @@ if __name__ == '__main__':
             print("--return--", flag[1])
             break
 
+    print("=========final output==========")
+    for element in out_file:
+        print(element, end='')
+    print("\n")
     checkpoint_memory(total_ins)
     checkpoint_register(total_ins)
+
+    final_out = open(argv[5], 'w')
+    for element in out_file:
+        final_out.write(element)
+    final_out.close()
 
     infile.close()
     outfile.close()

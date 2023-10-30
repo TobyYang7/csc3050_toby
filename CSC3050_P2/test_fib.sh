@@ -1,3 +1,5 @@
+cd csc3050_toby/CSC3050_P2/
+clear
 python3 simulator.py Example_test_cases/fib/fib.asm Example_test_cases/fib/fib.txt Example_test_cases/fib/fib_checkpts.txt Example_test_cases/fib/fib.in fib.out
 
 a=0

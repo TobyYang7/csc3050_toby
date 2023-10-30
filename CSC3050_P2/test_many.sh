@@ -1,3 +1,4 @@
+clear
 python3 simulator.py Example_test_cases/many/many.asm Example_test_cases/many/many.txt Example_test_cases/many/many_checkpts.txt Example_test_cases/many/many.in many.out
 
 a=0

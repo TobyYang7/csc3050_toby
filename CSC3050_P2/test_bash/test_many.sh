@@ -101,7 +101,7 @@ fi
 cmp many.out Example_test_cases/many/many_correct.out
 if [ $? -eq 1 ]
 then
-    echo "Oooops! many failed"
+    echo "Final Result: FAIL"
 else
-    echo "Output of many is correct!"
+    echo "Final Result: CORRECT"
 fi

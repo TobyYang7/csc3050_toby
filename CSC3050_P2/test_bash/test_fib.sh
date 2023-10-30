@@ -49,7 +49,7 @@ fi
 cmp fib.out Example_test_cases/fib/fib_correct.out
 if [ $? -eq 1 ]
 then
-    echo "Oooops! fib failed"
+    echo "Final Result: FAIL"
 else
-    echo "Output of fib is correct!"
+    echo "Final Result: CORRECT"
 fi

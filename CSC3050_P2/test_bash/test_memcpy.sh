@@ -64,7 +64,7 @@ fi
 cmp memcpy-hello-world.out Example_test_cases/memcpy-hello-world/memcpy-hello-world_correct.out
 if [ $? -eq 1 ]
 then
-    echo "Oooops! memcpy-hello-world failed"
+    echo "Final Result: FAIL"
 else
-    echo "Output of memcpy-hello-world is correct!"
+    echo "Final Result: CORRECT"
 fi

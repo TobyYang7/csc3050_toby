@@ -19,7 +19,7 @@ fi
 cmp a-plus-b.out Example_test_cases/a-plus-b/a-plus-b_correct.out
 if [ $? -eq 1 ]
 then
-    echo "Oooops! a-plus-b failed"
+    echo "Final Result: FAIL"
 else
-    echo "Output of a-plus-b is correct!"
+    echo "Final Result: CORRECT"
 fi

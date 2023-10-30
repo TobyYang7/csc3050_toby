@@ -34,7 +34,7 @@ fi
 cmp lw_sw.out Example_test_cases/lw_sw/lw_sw_correct.out
 if [ $? -eq 1 ]
 then
-    echo "Oooops! lw_sw failed"
+    echo "Final Result: FAIL"
 else
-    echo "Output of lw_sw is correct!"
+    echo "Final Result: CORRECT"
 fi

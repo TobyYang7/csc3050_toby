@@ -559,22 +559,57 @@ def _open():
     reg[REGS.get("_a0")] = file_descriptor
 
 
-def _read():
-    file_descriptor = reg[REGS.get("_a0")]
-    buffer_address = reg[REGS.get("_a1")]
-    size = reg[REGS.get("_a2")]
+def _read():  # fix
+    fd = reg[REGS.get("_a0")]
+    buffer = reg[REGS.get("_a1")] - STARTING_ADDRESS
+    length = reg[REGS.get("_a2")]
 
-    print("--read--", hex(file_descriptor), hex(buffer_address))
+    # print("--read--", hex(file_descriptor), hex(buffer_address))
 
-    if file_descriptor == 0:  # 标准输入
-        input_data = os.read(0, size)  # 从标准输入读取数据
-        mem[buffer_address - STARTING_ADDRESS: buffer_address -
-            STARTING_ADDRESS + len(input_data)] = input_data
-        reg[REGS.get("_v0")] = len(input_data)
-    elif file_descriptor == 1 or file_descriptor == 2:  # 防止尝试从标准输出或标准错误读取
-        reg[REGS.get("_v0")] = -1
-    else:
-        buffer_data = bytes(mem[buffer_address - STARTING_ADDRESS:])
+    # if file_descriptor == 0:  # 标准输入
+    #     input_data = os.read(0, size)  # 从标准输入读取数据
+    #     mem[buffer_address - STARTING_ADDRESS: buffer_address -
+    #         STARTING_ADDRESS + len(input_data)] = input_data
+    #     reg[REGS.get("_v0")] = len(input_data)
+    # elif file_descriptor == 1 or file_descriptor == 2:  # 防止尝试从标准输出或标准错误读取
+    #     reg[REGS.get("_v0")] = -1
+    # else:
+    #     buffer_data = bytes(mem[buffer_address - STARTING_ADDRESS:])
+
+    input_data = os.read(fd, length)
+
+    mem[buffer:buffer + length] = input_data
+
+
+# def _read():
+#     _a0 = REGS.get("_a0")
+#     _a1 = REGS.get("_a1")
+#     _a2 = REGS.get("_a2")
+
+#     if None in (_a0, _a1, _a2):
+#         print("Error: Registers _a0, _a1, or _a2 not found in REGS.")
+#         return
+
+#     # Calculate the buffer offset
+#     buffer_offset = _a1 - STARTING_ADDRESS
+
+#     # Calculate the position in the memory (bytearray)
+#     data_position = buffer_offset
+
+#     # Ensure the position and length are valid
+#     if data_position < 0 or data_position + _a2 > len(mem):
+#         print("Error: Invalid data position or length.")
+#         return
+
+#     # Create a bytes object to store the read data
+#     data_read = bytearray(_a2)
+
+#     # Read the data and update the register
+#     bytes_read = os.read(_a0, data_read)
+#     REGS[_a0] = bytes_read
+
+#     # Store the read data back to the simulated memory (prog)
+#     mem[data_position:data_position+bytes_read] = data_read[:bytes_read]
 
 
 def _write():

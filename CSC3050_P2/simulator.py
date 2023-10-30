@@ -1,5 +1,4 @@
 from lib import *
-from lib_mem import *
 from sys import argv
 
 if __name__ == '__main__':

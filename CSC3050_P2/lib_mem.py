@@ -136,6 +136,7 @@ def data_handler(file_name):
 
             if ".ascii" in data_type:
                 print(">>ascii>>")
+
                 line = line[line.find("\"") + 1:]
                 end = 0
 
@@ -301,7 +302,9 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
     global count
     res = []
     op_code = machine_code[:6]
-    print(">>", reg[2], reg[4], reg[17])
+    print(">>", count, ">> v0:%d a0:%d s1:%d" %
+          (reg[2], reg[4], reg[17]))
+    print(STATIC_DATA)
     if op_code == "000000":
         rs = bin_to_num(machine_code[6:11])
         rt = bin_to_num(machine_code[11:16])

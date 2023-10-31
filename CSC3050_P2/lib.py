@@ -99,21 +99,6 @@ def bin_to_num(binary_str):
     return result
 
 
-def to_binary(num, length):
-    binary_str = ""
-    while num:
-        binary_str = ('1' if num & 1 else '0') + binary_str
-        num >>= 1
-    binary_str = binary_str.zfill(length)
-    return binary_str
-
-
-def to_hex(num, length):
-    hex_str = format(num, 'x')
-    hex_str = hex_str.zfill(length)
-    return hex_str
-
-
 def _add(rs, rt, rd):
     reg[rd] = reg[rs] + reg[rt]
     print("--add--", reg[rs], reg[rt], reg[rd])
@@ -682,7 +667,7 @@ def data_handler(file_name):
     num = 0
     length = 0
     end = 0
-    contin_bs = 0
+    count_tmp = 0
     at_dot_data = False
     at_dot_text = False
 
@@ -716,48 +701,48 @@ def data_handler(file_name):
 
                 line = line[:end]
                 length = 0
-                contin_bs = 0
+                count_tmp = 0
 
                 for i in range(len(line) - 1):
                     if line[i] == '\\' and line[i + 1] == '\\':
-                        contin_bs += 1
-                        if contin_bs % 2 == 1:
+                        count_tmp += 1
+                        if count_tmp % 2 == 1:
                             continue
                         else:
                             mem[TEXT_SIZE + STATIC_DATA + length] = line[i]
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
                     elif line[i] == '\\' and line[i + 1] != '\\':
-                        contin_bs += 1
-                        if contin_bs % 2 == 1:
+                        count_tmp += 1
+                        if count_tmp % 2 == 1:
                             continue
                         else:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = get_char(line[i])
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
                     elif line[i] != '\\':
-                        if contin_bs == 0:
+                        if count_tmp == 0:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = ord(line[i])
                             length += 1
-                        elif contin_bs != 0:
+                        elif count_tmp != 0:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = ord(get_char(line[i]))
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
 
-                if contin_bs % 2 != 0:
+                if count_tmp % 2 != 0:
                     print(hex(TEXT_SIZE+STATIC_DATA+length),
                           ord(get_char(line[-1])))
                     mem[TEXT_SIZE + STATIC_DATA +
                         length] = ord(get_char(line[-1]))
-                    contin_bs = 0
-                elif contin_bs % 2 == 0:
+                    count_tmp = 0
+                elif count_tmp % 2 == 0:
                     print(hex(TEXT_SIZE+STATIC_DATA+length),
                           ord(line[-1]))
                     mem[TEXT_SIZE + STATIC_DATA + length] = ord(line[-1])
-                    contin_bs = 0
+                    count_tmp = 0
 
                 length += 1
                 mem[TEXT_SIZE + STATIC_DATA + length] = ord('\0')
@@ -784,48 +769,48 @@ def data_handler(file_name):
 
                 line = line[:end]
                 length = 0
-                contin_bs = 0
+                count_tmp = 0
 
                 for i in range(len(line) - 1):
                     if line[i] == '\\' and line[i + 1] == '\\':
-                        contin_bs += 1
-                        if contin_bs % 2 == 1:
+                        count_tmp += 1
+                        if count_tmp % 2 == 1:
                             continue
                         else:
                             mem[TEXT_SIZE + STATIC_DATA + length] = line[i]
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
                     elif line[i] == '\\' and line[i + 1] != '\\':
-                        contin_bs += 1
-                        if contin_bs % 2 == 1:
+                        count_tmp += 1
+                        if count_tmp % 2 == 1:
                             continue
                         else:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = get_char(line[i])
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
                     elif line[i] != '\\':
-                        if contin_bs == 0:
+                        if count_tmp == 0:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = ord(line[i])
                             length += 1
-                        elif contin_bs != 0:
+                        elif count_tmp != 0:
                             mem[TEXT_SIZE + STATIC_DATA +
                                 length] = get_char(line[i])
                             length += 1
-                            contin_bs = 0
+                            count_tmp = 0
 
-                if contin_bs % 2 != 0:
+                if count_tmp % 2 != 0:
                     print(hex(TEXT_SIZE+STATIC_DATA+length),
                           ord(get_char(line[-1])))
                     mem[TEXT_SIZE + STATIC_DATA +
                         length] = ord(get_char(line[-1]))
-                    contin_bs = 0
-                elif contin_bs % 2 == 0:
+                    count_tmp = 0
+                elif count_tmp % 2 == 0:
                     print(hex(TEXT_SIZE+STATIC_DATA+length),
                           ord(line[-1]))
                     mem[TEXT_SIZE + STATIC_DATA + length] = line[-1]
-                    contin_bs = 0
+                    count_tmp = 0
 
                 length += 1
 
@@ -865,13 +850,7 @@ def data_handler(file_name):
             if ".byte" in data_type:
                 print(">>byte>>")
                 line = line[line.find(".byte") + 6:]
-                # ss = line
                 nums = line.split(",")
-
-                # while ss:
-                #     num, ss = ss.split(maxsplit=1)
-                #     nums.append(int(num))
-
                 length = len(nums)
 
                 for i in range(length):
@@ -886,13 +865,7 @@ def data_handler(file_name):
             if ".half" in data_type:
                 print(">>half>>")
                 line = line[line.find(".half") + 6:]
-                # ss = line
                 nums = line.split(",")
-
-                # while ss:
-                #     num, ss = ss.split(maxsplit=1)
-                #     nums.append(int(num))
-
                 length = len(nums)
 
                 for i in range(length):

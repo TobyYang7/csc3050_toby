@@ -18,6 +18,7 @@ my_ins = []
 checkpoints = set()
 count = 0
 out_file = []
+fd_one = 0
 
 
 REGS = {
@@ -470,14 +471,28 @@ def _jal(target):
 
 
 def _print_int(fout):
+    # global out_file
+    print(out_file)
     print("--print int--", int(reg[REGS.get("_a0")]))
     out_file.append(str(int(reg[REGS.get("_a0")])))
-    fout.write(str(int(reg[REGS.get("_a0")])).encode('ascii'))
-    fout.flush()
+
+    print(out_file)
+    # fout.write(str(int(reg[REGS.get("_a0")])))
+    fout.write(out_file[-1])
+    # fout.flush()
+
+
+def _print_char(fout):
+    print("--print char--")
+    out_file.append(chr(reg[REGS.get("_a0")]))
+    # fout.write(str(reg[REGS.get("_a0")]))
+    fout.write(out_file[-1])
+    # fout.flush()
 
 
 def _print_string(fout):
-    global out_file
+    # global out_file
+    print(out_file)
 
     start_address = reg[REGS.get("_a0")] - STARTING_ADDRESS
 
@@ -497,8 +512,11 @@ def _print_string(fout):
 
     print(string_to_write.decode('utf-8'))
     out_file.append(string_to_write.decode('utf-8'))
-    fout.write(string_to_write)
-    fout.flush()
+
+    print(out_file)
+    # fout.write(string_to_write.decode('utf-8'))
+    fout.write(out_file[-1])
+    # fout.flush()
 
 
 def _read_int(fin):
@@ -537,13 +555,6 @@ def _exit(to_exit):
     return 0
 
 
-def _print_char(fout):
-    print("--print char--")
-    out_file.append(chr(reg[REGS.get("_a0")]))
-    fout.write(chr(reg[REGS.get("_a0")]).encode('ascii'))
-    fout.flush()
-
-
 def _read_char(fin):
     print("--read char--")
     reg[REGS.get("_v0")] = ord(fin.read(1))
@@ -568,14 +579,20 @@ def _open():
     print("--open--", file_name, flag, mode)
     file_descriptor = os.open(file_name, flag, mode)
     reg[REGS.get("_a0")] = file_descriptor
+    print("fd:", file_descriptor)
+    print("fd_a0:", reg[REGS.get("_a0")])
 
 
 def _read():  # fix
+    print("--read--")
     fd = reg[REGS.get("_a0")]
     buffer = reg[REGS.get("_a1")] - STARTING_ADDRESS
     length = reg[REGS.get("_a2")]
 
-    # print("--read--", hex(file_descriptor), hex(buffer_address))
+    print("--read--", fd, reg[REGS.get("_a1")], buffer, length)
+    print("fd:", fd)
+    print("fd_a0:", reg[REGS.get("_a0")])
+    print("_fd:", fd_one)
 
     # if file_descriptor == 0:  # 标准输入
     #     input_data = os.read(0, size)  # 从标准输入读取数据
@@ -624,12 +641,16 @@ def _read():  # fix
 
 
 def _write():
-    fd = REGS.get("_a0")
+    global fd_one
+    fd = reg[REGS.get("_a0")]
+    fd_one = fd
     buffer = reg[REGS.get("_a1")] - STARTING_ADDRESS
     length = reg[REGS.get("_a2")]
 
     print("--write--")
     print(fd, buffer, length)
+    print("fd:", fd)
+    print("fd_a0:", reg[REGS.get("_a0")])
 
     data = mem[buffer:buffer + length]
     reg[REGS.get("_a0")] = os.write(fd, data)
@@ -638,8 +659,8 @@ def _write():
 def _close():
     _a0 = REGS.get("_a0")
     fd = reg[_a0]
-
-    print("--close--", hex(fd))
+    print("fd:", fd)
+    print("fd_a0:", reg[REGS.get("_a0")])
     os.close(fd)
 
 
@@ -1051,7 +1072,7 @@ def execute_cmd(machine_code, infile, outfile, to_exit, return_val):
         imm = bin_to_num(machine_code[16:32])
 
         # print("==========case3================")
-        print("--rs rt imm--", rs, rt, imm)
+        # print("--rs rt imm--", rs, rt, imm)
         # print(reg)
         # print("--sp--", reg[REGS.get("_sp")])
         # print("===============================")

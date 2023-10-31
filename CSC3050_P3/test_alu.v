@@ -16,6 +16,9 @@ module test_alu();
     );
 
     initial begin
+        $dumpfile("test.vcd");
+        $dumpvars(0, test_alu);
+
         $monitor("Time: %3d.\n Instruction: %32b\n regA: %32b, regB: %32b\n result: %32b, flags: %3b\n",
         $time, instruction, regA, regB, result, flags);
 

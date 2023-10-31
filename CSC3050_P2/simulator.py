@@ -64,14 +64,15 @@ if __name__ == '__main__':
     print("=========final output==========")
     for element in out_file:
         print(element, end='')
-    print("\n")
     checkpoint_memory(total_ins)
     checkpoint_register(total_ins)
 
-    final_out = open("test.out", 'w')
-    for element in out_file:
-        final_out.write(element)
-    final_out.close()
+    # final_out = open("test.out", 'w')
+    # for element in out_file:
+    #     final_out.write(element)
+    # final_out.close()
 
     infile.close()
     outfile.close()
+
+    print("\n=========check=================")

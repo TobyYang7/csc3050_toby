@@ -1,6 +1,5 @@
 import os
 import struct
-from enum import Enum
 
 
 MEMORY_SIZE = 6 * 1024 * 1024  # 6291456
@@ -60,36 +59,17 @@ REGS = {
 }
 
 
-def ignore_label(line):
+def rm_label(line):
     found = line.find(":")
     if found != -1:
         line = line[found + 1:]
     return line
 
 
-def ignore_comment(line):
+def rm_comment(line):
     found = line.find("#")
     if found != -1:
         line = line[:found]
-    return line
-
-
-def remove_front_space(line):
-    while line and (line[0].isspace() or line[0] == '\t'):
-        line = line[1:]
-    return line
-
-
-def remove_back_space(line):
-    while line and (line[-1].isspace() or line[-1] == '\t'):
-        line = line[:-1]
-    return line
-
-
-def remove_sub_string(sub, line):
-    found = line.find(sub)
-    if found != -1:
-        line = line[found + len(sub):]
     return line
 
 
@@ -594,50 +574,9 @@ def _read():  # fix
     print("fd_a0:", reg[REGS.get("_a0")])
     print("_fd:", fd_one)
 
-    # if file_descriptor == 0:  # 标准输入
-    #     input_data = os.read(0, size)  # 从标准输入读取数据
-    #     mem[buffer_address - STARTING_ADDRESS: buffer_address -
-    #         STARTING_ADDRESS + len(input_data)] = input_data
-    #     reg[REGS.get("_v0")] = len(input_data)
-    # elif file_descriptor == 1 or file_descriptor == 2:  # 防止尝试从标准输出或标准错误读取
-    #     reg[REGS.get("_v0")] = -1
-    # else:
-    #     buffer_data = bytes(mem[buffer_address - STARTING_ADDRESS:])
-
     input_data = os.read(fd, length)
 
     mem[buffer:buffer + length] = input_data
-
-
-# def _read():
-#     _a0 = REGS.get("_a0")
-#     _a1 = REGS.get("_a1")
-#     _a2 = REGS.get("_a2")
-
-#     if None in (_a0, _a1, _a2):
-#         print("Error: Registers _a0, _a1, or _a2 not found in REGS.")
-#         return
-
-#     # Calculate the buffer offset
-#     buffer_offset = _a1 - STARTING_ADDRESS
-
-#     # Calculate the position in the memory (bytearray)
-#     data_position = buffer_offset
-
-#     # Ensure the position and length are valid
-#     if data_position < 0 or data_position + _a2 > len(mem):
-#         print("Error: Invalid data position or length.")
-#         return
-
-#     # Create a bytes object to store the read data
-#     data_read = bytearray(_a2)
-
-#     # Read the data and update the register
-#     bytes_read = os.read(_a0, data_read)
-#     REGS[_a0] = bytes_read
-
-#     # Store the read data back to the simulated memory (prog)
-#     mem[data_position:data_position+bytes_read] = data_read[:bytes_read]
 
 
 def _write():
@@ -747,14 +686,9 @@ def data_handler(file_name):
     at_dot_data = False
     at_dot_text = False
 
-    # if infile.fail():
-    #     print(f"Fail to open {file_name}")
-    #     infile.close()
-    #     return
-
     while line := infile.readline():
-        line = ignore_label(line)
-        line = ignore_comment(line)
+        line = rm_label(line)
+        line = rm_comment(line)
         line = line.strip()
 
         if ".data" in line:
@@ -980,11 +914,6 @@ def text_seg(file_name):
 
     infile = open(file_name, 'r')
     line = ""
-
-    # if infile.fail():
-    #     print(f"Fail to open {file_name}")
-    #     infile.close()
-    #     return
 
     while line := infile.readline():
         if len(line) < 32:

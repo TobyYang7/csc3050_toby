@@ -486,10 +486,10 @@ def _print_string(fout):
 
     char_count = 0
     while mem[end_address] != 0:
-        print("this char in: ", hex(end_address), repr(chr(mem[end_address])))
+        # print("this char in: ", hex(end_address), repr(chr(mem[end_address])))
         end_address += 1
         char_count += 1
-    print("total char: ", char_count)
+    # print("total char: ", char_count)
 
     string_to_write = mem[start_address:end_address]
 

@@ -1,5 +1,5 @@
 $date
-	Tue Oct 31 09:13:05 2023
+	Tue Nov  7 00:29:39 2023
 $end
 $version
 	Icarus Verilog
@@ -21,67 +21,83 @@ $var wire 6 ) opcode [5:0] $end
 $var reg 3 * flags [2:0] $end
 $var reg 6 + funct [5:0] $end
 $var reg 16 , immediate [15:0] $end
-$var reg 5 - rd [4:0] $end
-$var reg 32 . result [31:0] $end
-$var reg 5 / rs [4:0] $end
-$var reg 32 0 rs_reg [31:0] $end
-$var reg 5 1 rt [4:0] $end
-$var reg 32 2 rt_reg [31:0] $end
-$var reg 5 3 shamt [4:0] $end
+$var reg 1 - negative $end
+$var reg 1 . overflow $end
+$var reg 5 / rd [4:0] $end
+$var reg 32 0 result [31:0] $end
+$var reg 5 1 rs [4:0] $end
+$var reg 32 2 rs_reg [31:0] $end
+$var reg 5 3 rt [4:0] $end
+$var reg 32 4 rt_reg [31:0] $end
+$var reg 5 5 shamt [4:0] $end
+$var reg 32 6 temp_reg [31:0] $end
+$var reg 1 7 zero $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
 #0
 $dumpvars
-bx 3
-bx 2
-bx 1
-bx 0
-bx /
-bx .
-bx -
-bx ,
-bx +
-bx *
-bx )
-bx (
-bx '
-bx &
-bx %
-bx $
-bx #
-bx "
-bx !
-$end
-#1000
-b11111111111111111111111111111111 !
-b11111111111111111111111111111111 .
-b0 "
-b0 *
-b11111111111111111111111111111110 2
-b1 0
-b100001 +
+07
+b0 6
+b0 5
+b0 4
 b0 3
-b0 -
-b1 1
+b0 2
+b0 1
+b0 0
 b0 /
+0.
+0-
+b100000 ,
+b100000 +
+b0 *
+b0 )
+b10100 (
+b1010 '
+b100000 &
+b10100 %
+b1010 $
+b100000 #
+b0 "
+b0 !
+$end
+#20000
+b101 !
+b101 0
+b101 6
+b101 ,
+b101 +
+b1000 )
+b0 %
+b0 (
+b1111 $
+b1111 '
+b100000000000000000000000000101 #
+b100000000000000000000000000101 &
+#40000
+b0 !
+b0 0
+b0 6
+b100001 ,
+b100001 +
 b0 )
 b11111111111111111111111111111110 %
 b11111111111111111111111111111110 (
 b1 $
 b1 '
-b10000000000100001 #
-b10000000000100001 &
-#2000
-b10000000000000000111111111111110 !
-b10000000000000000111111111111110 .
-b1 2
-b1111111111111111111111111111111 0
-b111111111111111 ,
+b100001 #
+b100001 &
+#60000
+b1111111111111111 ,
+b11111 5
+b11111 /
+b111111 +
 b1001 )
-b1 %
-b1 (
 b1111111111111111111111111111111 $
 b1111111111111111111111111111111 '
-b100100000000010111111111111111 #
-b100100000000010111111111111111 &
+b100100000000001111111111111111 #
+b100100000000001111111111111111 &
+#80000

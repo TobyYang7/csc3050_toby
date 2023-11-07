@@ -88,14 +88,14 @@ module test_alu();
         // // regB is not used for ANDI
         // #20;
 
-        // NOR (R-type)
-        $display("Testing NOR...");
-        immediate = 6'b100111;
-        $display("--imm--%b", immediate);
-        instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, immediate}; // R-type format for NOR
-        regA = 32'b1100;
-        regB = 32'b1010;
-        #20;
+        // // NOR (R-type)
+        // $display("Testing NOR...");
+        // immediate = 6'b100111;
+        // $display("--imm--%b", immediate);
+        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, immediate}; // R-type format for NOR
+        // regA = 32'b1100;
+        // regB = 32'b1010;
+        // #20;
 
         // // OR (R-type)
         // $display("Testing OR...");
@@ -106,9 +106,11 @@ module test_alu();
 
         // // ORI (I-type)
         // $display("Testing ORI...");
-        // instruction = {6'b001101, 5'd0, 5'd0, 16'b0000000000001100}; // I-type format for ORI
+        // immediate = 16'b0000000000001101;
+        // $display("--imm--%b", immediate);
+        // instruction = {6'b001101, 5'd0, 5'd0, immediate}; // I-type format for ORI
         // regA = 32'b1100;
-        // regB = 32'd0; // regB is not used for ORI
+        // // regB is not used for ORI
         // #20;
 
         // // XOR (R-type)
@@ -120,47 +122,54 @@ module test_alu();
 
         // // XORI (I-type)
         // $display("Testing XORI...");
-        // instruction = {6'b001110, 5'd0, 5'd0, 16'b0000000000001100}; // I-type format for XORI
+        // immediate = 16'b0000000000000011;
+        // $display("--imm--%b", immediate);
+        // instruction = {6'b001110, 5'd0, 5'd0, immediate}; // I-type format for XORI
         // regA = 32'b1100;
-        // regB = 32'd0; // regB is not used for XORI
+        // // regB is not used for XORI
         // #20;
 
-        // // BEQ (I-type)
+        // // BEQ (I-type) zero detection
         // $display("Testing BEQ...");
-        // instruction = {6'b000100, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for BEQ
+        // immediate = 0;
+        // $display("--imm--%d", immediate);
+        // instruction = {6'b000100, 5'd0, 5'd0, immediate}; // I-type format for BEQ
         // regA = 32'd10;
         // regB = 32'd10;
         // #20;
 
-        // // BNE (I-type)
+        // // BNE (I-type) zero detection
         // $display("Testing BNE...");
-        // instruction = {6'b000101, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for BNE
+        // immediate = 0;
+        // $display("--imm--%d", immediate);
+        // instruction = {6'b000101, 5'd0, 5'd0, immediate}; // I-type format for BNE
         // regA = 32'd10;
         // regB = 32'd20;
         // #20;
 
-        // // SLT (R-type)
+        // todo: test the rest of the instructions
+        // // SLT (R-type) negative detection
         // $display("Testing SLT...");
         // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b101010}; // R-type format for SLT
         // regA = 32'd10;
         // regB = 32'd20;
         // #20;
 
-        // // SLTI (I-type)
+        // // SLTI (I-type) negative detection
         // $display("Testing SLTI...");
         // instruction = {6'b001010, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for SLTI
         // regA = 32'd5;
         // regB = 32'd0; // regB is not used for SLTI
         // #20;
 
-        // // SLTIU (I-type)
+        // // SLTIU (I-type) negative detection
         // $display("Testing SLTIU...");
         // instruction = {6'b001011, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for SLTIU
         // regA = 32'd20;
         // regB = 32'd0; // regB is not used for SLTIU
         // #20;
 
-        // // SLTU (R-type)
+        // // SLTU (R-type) negative detection
         // $display("Testing SLTU...");
         // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b101011}; // R-type format for SLTU
         // regA = 32'd10;

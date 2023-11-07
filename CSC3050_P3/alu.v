@@ -19,21 +19,6 @@ assign opcode = instruction[31:26];
 reg [31:0] temp_reg;
 reg zero, negative, overflow; // flags
 
-// task update_flags;
-//     input [31:0] result;
-//     input zero_flag_in;
-//     input negative_flag_in;
-//     input overflow_flag_in;
-//     output reg zero_flag_out;
-//     output reg negative_flag_out;
-//     output reg overflow_flag_out;
-// begin
-//     zero_flag_out = zero_flag_in ? 1'b1 : result == 32'b0;
-//     negative_flag_out = negative_flag_in ? 1'b1 : result[31];
-//     overflow_flag_out = overflow_flag_in; // Overflow flag typically set during arithmetic operations
-// end
-// endtask
-
 task update_flags;
     input [5:0] opcode;      // The opcode of the current instruction
     input [5:0] funct;       // The function field for R-type instructions
@@ -63,9 +48,11 @@ begin
 
 
     // Check for zero flag conditions
-    if (opcode == 6'b000100 || // beq
-        opcode == 6'b000101) begin // bne
-        zero_flag = (result == 0);
+    if (opcode == 6'b000100) begin // beq
+        zero_flag = (result == 0 && regA == regB);
+    end
+    if (opcode == 6'b000101) begin // bne
+        zero_flag = (result == 0 && regA != regB);
     end
 
     // Check for negative flag conditions
@@ -94,6 +81,21 @@ always @(*) begin
     //Zero-extend immediate for I-type instructions
     if (opcode == 6'b001001 || opcode == 6'b001011 || opcode == 6'b001110) begin
         immediate = {{16{1'b0}}, immediate};
+    end
+
+    // Sign-extend immediate for branch instructions
+    if (opcode == 6'b000100 || opcode == 6'b000101) begin
+        immediate = {{16{instruction[15]}}, immediate};
+    end
+
+    // Sign-extend immediate for load/store instructions
+    if (opcode == 6'b100011 || opcode == 6'b101011) begin
+        immediate = {{16{instruction[15]}}, immediate};
+    end
+
+    // Sign-extend immediate for shift instructions
+    if (opcode == 6'b000000 && (funct == 6'b000000 || funct == 6'b000010 || funct == 6'b000011)) begin
+        immediate = {{27{instruction[5]}}, immediate};
     end
 end
 
@@ -269,14 +271,14 @@ always @(*) begin
 
     //lw
     if (opcode == 6'b100011) begin
-        temp_reg = regA + immediate;
-        $display("--lw--%d = %d + %d", temp_reg, regA, immediate);
+        temp_reg = rs_reg + immediate;
+        $display("--lw--%d = %d + %d", temp_reg, rs_reg, immediate);
     end
 
     //sw
     if (opcode == 6'b101011) begin
-        temp_reg = regA + immediate;
-        $display("--sw--%d = %d + %d", temp_reg, regA, immediate);
+        temp_reg = rs_reg + immediate;
+        $display("--sw--%d = %d + %d", temp_reg, rs_reg, immediate);
     end
 
     //sll

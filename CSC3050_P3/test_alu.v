@@ -3,236 +3,287 @@
 `timescale 1ns/1ps
 
 module test_alu();
-    reg [31:0] instruction, regA, regB;
-    wire [31:0] result;
-    wire [2:0] flags;  // Flags wire should be 3 bits to match the ALU module
-    reg [15:0] immediate;
+    reg[31:0] instruction, regA, regB;
+    wire[31:0] result;
+    wire[2:0] flags;
 
-    // Instantiate the ALU module
     alu test(
-        .instruction(instruction),
-        .regA(regA),
-        .regB(regB),
-        .result(result), 
-        .flags(flags)
+        .instruction (instruction),
+        .regA (regA),
+        .regB (regB),
+        .result (result), 
+        .flags (flags)
     );
 
     initial begin
-        $dumpfile("test.vcd");
-        $dumpvars(0, test_alu);
+        $monitor("Time: %3d.\n Instruction: %32b\n regA: %32b, regB: %32b\n result: %32b, flags: %3b\n",
+        $time, instruction, regA, regB, result, flags);
 
-        $monitor("Time: %3d\n  Instr : %32b\n  regA  : %32b\n  regB  : %32b\n  result: %32b\nIn Decimals:\n  regA  : %d\n  regB  : %d\n  result: %d\nFlags: \n  zero    : %b\n  negative: %b\n  overflow: %b\n----------------------------------------------",
-        $time, instruction, regA, regB, result, regA, regB, result, flags[2], flags[1], flags[0]);
+        // add
+        #1
+        $display("add");
+        instruction = 32'b000000_00000_00001_00000_00000_100000; //000000 00000 00001 00000 00000 100000
+        regA = 32'b000000_00000_00000_00000_00000_000001;
+        regB = 32'b000000_00000_00000_00000_00000_000001; 
 
+        // add with overflow-positive
+        #1
+        $display("add with overflow-positive");
+        instruction = 32'b000000_00000_00001_00000_00000_100000;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b01111111_11111111_11111111_11111111;
 
-        // Test cases for each instruction
+        // add with overflow-negative
+        #1
+        $display("add with overflow-negative");
+        instruction = 32'b000000_00000_00001_00000_00000_100000;
+        regA = 32'b10000000_00000000_00000000_00000000;
+        regB = 32'b10000000_00000000_00000000_00000000;
 
-        // // ADD (R-type) overflow detection
-        // $display("Testing ADD...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100000}; // R-type format for ADD
-        // regA = 32'h7FFFFFFF; // Largest positive 32-bit number
-        // regB = 1;
-        // #20;
+        // addi
+        #1
+        $display("addi");
+        instruction = 32'b001000_00001_00000_01111_11111_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b000000_00000_00000_00000_00000_000001;
 
-        // // ADDI (I-type) overflow detection
-        // $display("Testing ADDI...");
-        // immediate = 1;
-        // $display("--imm--%d", immediate);
-        // instruction = {6'b001000, 5'd0, 5'd0, immediate}; // I-type format for ADDI
-        // regA = 32'h7FFFFFFF;
-        // // regB is not used for ADDI
-        // #20;
+        // addi with overflow
+        #1
+        $display("addi with overflow");
+        instruction = 32'b001000_00000_00001_01111_11111_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b000000_00000_00000_00000_00000_000001;
 
-        // // ADDU (R-type)
-        // $display("Testing ADDU...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100001}; // R-type format for ADDU
-        // regA = 2;
-        // regB = 32'h7FFFFFFF; // -2 in two's complement
-        // #20;
+        // addu
+        #1
+        $display("addu");
+        instruction = 32'b000000_00000_00001_00000_00000_100001;
+        regA = 32'b1;
+        regB = 32'b11111111_11111111_11111111_11111110;
 
-        // // ADDIU (I-type)
-        // $display("Testing ADDIU...");
-        // immediate = 16'hFFFF;
-        // $display("--imm--%d", immediate);
-        // instruction = {6'b001001, 5'd0, 5'd0, immediate}; // I-type format for ADDIU
-        // regA = 32'h7FFFFFFF; // Largest positive 32-bit number
-        // #20;
+        // addiu
+        #1
+        $display("addiu");
+        instruction = 32'b001001_00000_00001_0111111111111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b1;
 
-        // // SUB (R-type) overflow detection
-        // $display("Testing SUB...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100010}; // R-type format for SUB
-        // regA = -30;
-        // regB = -31;
-        // #20;
+        // sub
+        #1
+        $display("sub");
+        instruction = 32'b000000_00000_00001_00000_00000_100010;
+        regA = 32'b1;
+        regB = 32'b1;
 
-        // // SUBU (R-type)
-        // $display("Testing SUBU...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100011}; // R-type format for SUBU
-        // regA = -30;
-        // regB = -31;
-        // #20;
+        // sub with overflow-positive
+        #1
+        $display("sub with overflow-positive");
+        instruction = 32'b000000_00000_00001_00000_00000_100010;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b10000000_00000000_00000000_00000000;
 
-        // // AND (R-type)
-        // $display("Testing AND...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100100}; // R-type format for AND
-        // regA = 32'b1100;
-        // regB = 32'b1010;
-        // #20;
+        // sub with overflow-negative
+        #1
+        $display("sub with overflow-negative");
+        instruction = 32'b000000_00000_00001_00000_00000_100010;
+        regA = 32'b10000000_00000000_00000000_00000000;
+        regB = 32'b01111111_11111111_11111111_11111111;
 
-        // // ANDI (I-type)
-        // $display("Testing ANDI...");
-        // immediate = 16'b0000000000001100;
-        // $display("--imm--%b", immediate);
-        // instruction = {6'b001100, 5'd0, 5'd0, immediate}; // I-type format for ANDI
-        // regA = 32'b1100;
-        // // regB is not used for ANDI
-        // #20;
+        // subu
+        #1
+        $display("subu");
+        instruction = 32'b000000_00000_00001_00000_00000_100011;
+        regA = 32'b10000000_00000000_00000000_00000000;
+        regB = 32'b01111111_11111111_11111111_11111111;
 
-        // // NOR (R-type)
-        // $display("Testing NOR...");
-        // immediate = 6'b100111;
-        // $display("--imm--%b", immediate);
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, immediate}; // R-type format for NOR
-        // regA = 32'b1100;
-        // regB = 32'b1010;
-        // #20;
+        // and
+        #1
+        $display("and");
+        instruction = 32'b000000_00000_00001_00000_00000_100100;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_11111111;
 
-        // // OR (R-type)
-        // $display("Testing OR...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100101}; // R-type format for OR
-        // regA = 32'b1100;
-        // regB = 32'b1010;
-        // #20;
+        // andi
+        #1
+        $display("andi");
+        instruction = 32'b001100_00000_00001_00000_00011_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // ORI (I-type)
-        // $display("Testing ORI...");
-        // immediate = 16'b0000000000001101;
-        // $display("--imm--%b", immediate);
-        // instruction = {6'b001101, 5'd0, 5'd0, immediate}; // I-type format for ORI
-        // regA = 32'b1100;
-        // // regB is not used for ORI
-        // #20;
+        // nor
+        #1
+        $display("nor");
+        instruction = 32'b000000_00000_00001_00000_00000_100111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_11111111;
 
-        // // XOR (R-type)
-        // $display("Testing XOR...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b100110}; // R-type format for XOR
-        // regA = 32'b1100;
-        // regB = 32'b1010;
-        // #20;
+        // or
+        #1
+        $display("or");
+        instruction = 32'b000000_00000_00001_00000_00000_100101;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_11111111;
 
-        // // XORI (I-type)
-        // $display("Testing XORI...");
-        // immediate = 16'b0000000000000011;
-        // $display("--imm--%b", immediate);
-        // instruction = {6'b001110, 5'd0, 5'd0, immediate}; // I-type format for XORI
-        // regA = 32'b1100;
-        // // regB is not used for XORI
-        // #20;
+        // ori
+        #1
+        $display("ori");
+        instruction = 32'b001101_00000_00001_00000_00011_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b11111111_11111111_11111111_11111110;
 
-        // // BEQ (I-type) zero detection
-        // $display("Testing BEQ...");
-        // immediate = 0;
-        // $display("--imm--%d", immediate);
-        // instruction = {6'b000100, 5'd0, 5'd0, immediate}; // I-type format for BEQ
-        // regA = 32'd10;
-        // regB = 32'd10;
-        // #20;
+        // xor
+        #1
+        $display("xor");
+        instruction = 32'b000000_00000_00001_00000_00000_100110;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_11111111;
 
-        // // BNE (I-type) zero detection
-        // $display("Testing BNE...");
-        // immediate = 0;
-        // $display("--imm--%d", immediate);
-        // instruction = {6'b000101, 5'd0, 5'd0, immediate}; // I-type format for BNE
-        // regA = 32'd10;
-        // regB = 32'd20;
-        // #20;
+        // ori
+        #1
+        $display("ori");
+        instruction = 32'b001110_00000_00001_00000_00011_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b11111111_11111111_11111111_11111110;
 
-        // todo: test the rest of the instructions
-        // // SLT (R-type) negative detection
-        // $display("Testing SLT...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b101010}; // R-type format for SLT
-        // regA = 32'd10;
-        // regB = 32'd20;
-        // #20;
+        // beq on equal
+        #1
+        $display("beq on equal");
+        instruction = 32'b000100_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000001;
 
-        // // SLTI (I-type) negative detection
-        // $display("Testing SLTI...");
-        // instruction = {6'b001010, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for SLTI
-        // regA = 32'd5;
-        // regB = 32'd0; // regB is not used for SLTI
-        // #20;
+        // beq on not equal
+        #1
+        $display("beq on not equal");
+        instruction = 32'b000100_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // SLTIU (I-type) negative detection
-        // $display("Testing SLTIU...");
-        // instruction = {6'b001011, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for SLTIU
-        // regA = 32'd20;
-        // regB = 32'd0; // regB is not used for SLTIU
-        // #20;
+        // bne on equal
+        #1
+        $display("bne on equal");
+        instruction = 32'b000101_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000001;
 
-        // // SLTU (R-type) negative detection
-        // $display("Testing SLTU...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd0, 5'd0, 6'b101011}; // R-type format for SLTU
-        // regA = 32'd10;
-        // regB = 32'd20;
-        // #20;
+        // bne on not equal
+        #1
+        $display("bne on not equal");
+        instruction = 32'b000101_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // LW (I-type)
-        // $display("Testing LW...");
-        // instruction = {6'b100011, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for LW
-        // regA = 32'd0; // base register
-        // regB = 32'd0; // offset
-        // #20;
+        // slt on less
+        #1
+        $display("slt on less");
+        instruction = 32'b000000_00000_00001_00000_00000_101010;
+        regA = 32'b11111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_00000001;
 
-        // // SW (I-type)
-        // $display("Testing SW...");
-        // instruction = {6'b101011, 5'd0, 5'd0, 16'b0000000000000010}; // I-type format for SW
-        // regA = 32'd0; // base register
-        // regB = 32'd10; // offset
-        // #20;
+        // slt on greater
+        #1
+        $display("slt on greater");
+        instruction = 32'b000000_00000_00001_00000_00000_101010;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // SLL (R-type)
-        // $display("Testing SLL...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd10, 5'd0, 6'b000000}; // R-type format for SLL
-        // regA = 32'd5;
-        // regB = 32'd0; // regB is not used for SLL
-        // #20;
+        // slti on less
+        #1
+        $display("slti on less");
+        instruction = 32'b001010_00000_00001_01111_11111_111111;
+        regA = 32'b11111111_11111111_11111111_11111111;
+        regB = 32'b11111111_11111111_11111111_11111111;
 
-        // // SLLV (R-type)
-        // $display("Testing SLLV...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd2, 5'd0, 6'b000100}; // R-type format for SLLV
-        // regA = 32'd8;
-        // regB = 32'd0; // regB is not used for SLLV
-        // #20;
+        // slti on greater
+        #1
+        $display("slti on greater");
+        instruction = 32'b001010_00000_00001_11111_11111_111111;
+        regA = 32'b01111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // SRL (R-type)
-        // $display("Testing SRL...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd10, 5'd0, 6'b000010}; // R-type format for SRL
-        // regA = 32'd1024;
-        // regB = 32'd0; // regB is not used for SRL
-        // #20;
+        // sltiu on less
+        #1
+        $display("sltiu on less");
+        instruction = 32'b001011_00000_00001_11111_11111_111111;
+        regA = 32'b00000000_00000000_00000000_00000000;
+        regB = 32'b00000000_00000000_00000000_00000001;
 
-        // // SRLV (R-type)
-        // $display("Testing SRLV...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd2, 5'd0, 6'b000110}; // R-type format for SRLV
-        // regA = 32'd1024;
-        // regB = 32'd0; // regB is not used for SRLV
-        // #20;
+        // sltiu on greater
+        #1
+        $display("sltiu on greater");
+        instruction = 32'b001011_00000_00001_11111_11111_111111;
+        regA = 32'b11111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // // SRA (R-type)
-        // $display("Testing SRA...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd10, 5'd0, 6'b000011}; // R-type format for SRA
-        // regA = 32'hF0000000; // negative number
-        // regB = 32'd0; // regB is not used for SRA
-        // #20;
+        // sltu on less
+        #1
+        $display("sltu on less");
+        instruction = 32'b000000_00000_00001_00000_00000_101011;
+        regA = 32'b00000000_00000000_00000000_00000000;
+        regB = 32'b00000000_00000000_00000000_00000001;
 
-        // // SRAV (R-type)
-        // $display("Testing SRAV...");
-        // instruction = {6'b000000, 5'd0, 5'd0, 5'd2, 5'd0, 6'b000111}; // R-type format for SRAV
-        // regA = 32'hF0000000; // negative number
-        // regB = 32'd0; // regB is not used for SRAV
-        // #20;
+        // sltu on greater
+        #1
+        $display("sltu on greater");
+        instruction = 32'b000000_00000_00001_00000_00000_101011;
+        regA = 32'b11111111_11111111_11111111_11111111;
+        regB = 32'b00000000_00000000_00000000_00000000;
 
-        // Complete the test
-        $finish;
+        // lw
+        #1
+        $display("lw");
+        instruction = 32'b100011_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000000;
+
+        // sw
+        #1
+        $display("sw");
+        instruction = 32'b101011_00000_00001_00000_00000_000000;
+        regA = 32'b00000000_00000000_00000000_00000001;
+        regB = 32'b00000000_00000000_00000000_00000000;
+
+        // sll
+        #1
+        $display("sll");
+        instruction = 32'b000000_00000_00001_00000_00100_000000;
+        regA = 32'b00000000_00000000_00000000_00000000;
+        regB = 32'b11111111_11111111_11111111_11111111;
+
+        // sllv
+        #1
+        $display("sllv");
+        instruction = 32'b000000_00000_00001_00000_00100_000100;
+        regA = 32'b00000000_00000000_00000000_00000100;
+        regB = 32'b11111111_11111111_11111111_11111111;
+
+        // srl
+        #1
+        $display("srl");
+        instruction = 32'b000000_00000_00001_00000_00100_000010;
+        regA = 32'b00000000_00000000_00000000_00000000;
+        regB = 32'b11111111_11111111_11111111_11111111;
+
+        // srlv
+        #1
+        $display("srlv");
+        instruction = 32'b000000_00000_00001_00000_00100_000110;
+        regA = 32'b00000000_00000000_00000000_00000100;
+        regB = 32'b11111111_11111111_11111111_11111111;
+
+        // sra
+        #1
+        $display("sra");
+        instruction = 32'b000000_00000_00001_00000_00100_000011;
+        regA = 32'b00000000_00000000_00000000_00000000;
+        regB = 32'b10000000_11111111_11111111_11111111;
+
+        // srav
+        #1
+        $display("srav");
+        instruction = 32'b000000_00000_00001_00000_00100_000111;
+        regA = 32'b00000000_00000000_00000000_00000100;
+        regB = 32'b10000000_11111111_11111111_11111111;
     end
+
 endmodule

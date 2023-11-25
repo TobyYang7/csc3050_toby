@@ -35,30 +35,70 @@ begin
     overflow_flag = 0;
 
     // Check for overflow flag conditions
-    if ((opcode == 6'b000000 && funct == 6'b100000) || // add
-        (opcode == 6'b000000 && funct == 6'b100010)) begin // sub
-        // Overflow occurs if the signs of the inputs are the same and the sign of the result is different
-        overflow_flag = ((regA[31] == regB[31]) && (result[31] != regA[31]));
-    end else if (opcode == 6'b001000) begin // addi
-        // For addi, sign extend the immediate and check for overflow
-        // Assuming 'immediate' is 16 bits and needs to be sign-extended to 32 bits
-        extended_immediate = {{16{immediate[15]}}, immediate};
-        overflow_flag = ((regA[31] == extended_immediate[31]) && (result[31] != regA[31]));
-    end
+    case (opcode)
+        6'b000000: begin // add or sub
+            if (funct == 6'b100000) begin // add
+                // Overflow occurs if the signs of the inputs are the same and the sign of the result is different
+                overflow_flag = ((regA[31] == regB[31]) && (result[31] != regA[31]));
+                if (overflow_flag) begin
+                    $display("overflow");
+                end
+            end
+            if (funct == 6'b100010) begin // sub
+                // Overflow occurs if the signs of the inputs are different and the sign of the result is different from the minuend
+                overflow_flag = ((regA[31] != regB[31]) && (result[31] != regA[31]));
+                if (overflow_flag) begin
+                    $display("overflow");
+                end
+            end
+        end
+        6'b001000: begin // addi
+            // For addi, sign extend the immediate and check for overflow
+            // Assuming 'immediate' is 16 bits and needs to be sign-extended to 32 bits
+            extended_immediate = {{16{immediate[15]}}, immediate};
+            overflow_flag = ((regA[31] == extended_immediate[31]) && (result[31] != regA[31]))?1:0;
+            if (overflow_flag) begin
+                $display("overflow");
+            end
+        end
+    endcase
 
 
     // Check for zero flag conditions
-    if (opcode == 6'b000100) begin // beq
-        zero_flag = (result == 0 && regA == regB);
-    end
-    if (opcode == 6'b000101) begin // bne
-        zero_flag = (result == 0 && regA != regB);
-    end
+    case (opcode)
+        6'b000100: begin // beq
+            zero_flag = ((rs_reg - rt_reg)==0)?1:0;
+        end
+        6'b000101: begin // bne
+            zero_flag = ((rs_reg - rt_reg)==0)?1:0;
+        end
+    endcase
 
     // Check for negative flag conditions
-    if ((opcode == 6'b000000 && (funct == 6'b101010 || funct == 6'b101011)) || // slt, sltu
-        (opcode == 6'b001010 || opcode == 6'b001011)) begin // slti, sltiu
-        negative_flag = result[31];
+    //slt
+    if (opcode == 6'b000000 && funct == 6'b101010) begin
+        negative_flag = (result==1)?1:0;
+        $display("negative flag: %d\n", negative_flag);
+    end
+    //slti
+    else if (opcode == 6'b001010) begin
+        if(rs_reg[31]==1&&immediate[31]==0)
+            negative_flag = 1;
+        else if(rs_reg[31]==0&&immediate[31]==1)
+            negative_flag = 0;
+        else
+            negative_flag = (rs_reg<immediate)?1:0;
+        $display("negative flag: %d\n", negative_flag);
+    end
+    //sltiu
+    else if (opcode == 6'b001011) begin
+        negative_flag = (result==1)?1:0;
+        $display("negative flag: %d\n", negative_flag);
+    end
+    //sltu
+    else if (opcode == 6'b000000 && funct == 6'b101011) begin
+        negative_flag = (result==1)?1:0;
+        $display("negative flag: %d\n", negative_flag);
     end
 end
 endtask
@@ -73,74 +113,23 @@ always @(*) begin
     shamt = instruction[10:6];
     immediate = instruction[15:0];
 
-    // Sign-extend immediate for I-type instructions
-    if (opcode == 6'b001000 || opcode == 6'b001100 || opcode == 6'b001101) begin
-        immediate = {{16{instruction[15]}}, immediate};
-    end
-
-    //Zero-extend immediate for I-type instructions
-    if (opcode == 6'b001001 || opcode == 6'b001011 || opcode == 6'b001110) begin
-        immediate = {{16{1'b0}}, immediate};
-    end
-
-    // Sign-extend immediate for branch instructions
-    if (opcode == 6'b000100 || opcode == 6'b000101) begin
-        immediate = {{16{instruction[15]}}, immediate};
-    end
-
-    // Sign-extend immediate for load/store instructions
-    if (opcode == 6'b100011 || opcode == 6'b101011) begin
-        immediate = {{16{instruction[15]}}, immediate};
-    end
-
-    // Sign-extend immediate for shift instructions
-    if (opcode == 6'b000000 && (funct == 6'b000000 || funct == 6'b000010 || funct == 6'b000011)) begin
-        immediate = {{27{instruction[5]}}, immediate};
-    end
+    case(opcode)
+        //addi, addiu, slti, sltiu, lw, sw
+        6'b001000, 6'b001001, 6'b001010, 6'b001011, 6'b100011, 6'b101011: begin
+            immediate = {{17{immediate[15]}}, immediate[14:0]};
+        end
+        //andi, ori, xori
+        6'b001100, 6'b001101, 6'b001110: begin
+            immediate = {{16{1'b0}}, immediate[15:0]};
+        end
+    endcase
 end
 
 // Fetch registers with sign consideration based on the instruction type
 always @(*) begin
     // Defaults for rs and rt
-    rs_reg = regA;
-    rt_reg = regB;
-
-    case (opcode)
-        6'b000000: begin // R-type instructions
-            case (funct)
-                // Signed operations
-                6'b100000, // add
-                6'b100010, // sub
-                6'b101010: // slt
-                    begin
-                        rs_reg = $signed(regA);
-                        rt_reg = $signed(regB);
-                    end
-                // Unsigned operations
-                6'b100001, // addu
-                6'b100011, // subu
-                6'b101011: // sltu
-                    begin
-                        rs_reg = $unsigned(regA);
-                        rt_reg = $unsigned(regB);
-                    end
-                // Shift operations and logical operations don't require signed/unsigned distinction
-            endcase
-        end
-        // I-type instructions
-        6'b001000, // addi
-        6'b001010: // slti
-            begin
-                rs_reg = $signed(regA);
-                // Immediate is sign-extended in the instruction parsing step
-            end
-        6'b001001, // addiu
-        6'b001011: // sltiu
-            begin
-                rs_reg = $unsigned(regA);
-                // Immediate is zero-extended in the instruction parsing step
-            end
-    endcase
+    rs_reg = (rs==5'b00000)?regA:regB;
+    rt_reg = (rt==5'b00000)?regA:regB;
 end
 
 
@@ -231,41 +220,46 @@ always @(*) begin
 
     //beq
     if (opcode == 6'b000100) begin
-        if (rs_reg == rt_reg) begin
-            temp_reg = immediate;
-            $display("--beq--%d = %d", temp_reg, immediate);
-        end
+        temp_reg = rs_reg - rt_reg;
+        $display("--beq--%d = %d", temp_reg, immediate);
     end
 
     //bne
     if (opcode == 6'b000101) begin
-        if (rs_reg != rt_reg) begin
-            temp_reg = immediate;
-            $display("--bne--%d = %d", temp_reg, immediate);
-        end
+        temp_reg = rs_reg - rt_reg;
+        $display("--bne--%d = %d", temp_reg, immediate);
     end
 
     //slt
     if (opcode == 6'b000000 && funct == 6'b101010) begin
-        temp_reg = (rs_reg < rt_reg) ? 1 : 0;
+        temp_reg = ($signed(rs_reg) < $signed(rt_reg)) ? 1 : 0;
+        negative = temp_reg;
         $display("--slt--%d = %d < %d", temp_reg, rs_reg, rt_reg);
     end
 
     //slti
     if (opcode == 6'b001010) begin
-        temp_reg = (rs_reg < immediate) ? 1 : 0;
-        $display("--slti--%d = %d < %d", temp_reg, rs_reg, immediate);
+        temp_reg = ($signed(rs_reg) < $signed(immediate)) ? 1 : 0;
+        if(rs_reg[31]==1&&immediate[31]==0)
+            negative = 1;
+        else if(rs_reg[31]==0&&immediate[31]==1)
+            negative = 0;
+        else
+            negative = (rs_reg<immediate)?1:0;
+        $display("--slti--%d = %d - %d", temp_reg, rs_reg, immediate);
     end
 
     //sltiu
     if (opcode == 6'b001011) begin
         temp_reg = (rs_reg < immediate) ? 1 : 0;
+        negative = temp_reg;
         $display("--sltiu--%d = %d < %d", temp_reg, rs_reg, immediate);
     end
 
     //sltu
     if (opcode == 6'b000000 && funct == 6'b101011) begin
         temp_reg = (rs_reg < rt_reg) ? 1 : 0;
+        negative = temp_reg;
         $display("--sltu--%d = %d < %d", temp_reg, rs_reg, rt_reg);
     end
 
@@ -307,18 +301,16 @@ always @(*) begin
 
     //sra
     if (opcode == 6'b000000 && funct == 6'b000011) begin
-        temp_reg = rt_reg >>> shamt;
+        temp_reg = $signed(rt_reg) >>> shamt;
         $display("--sra--%d = %d >>> %d", temp_reg, rt_reg, shamt);
     end
 
     //srav
     if (opcode == 6'b000000 && funct == 6'b000111) begin
-        temp_reg = rt_reg >>> rs_reg;
+        temp_reg = $signed(rt_reg) >>> $signed(rs_reg);
         $display("--srav--%d = %d >>> %d", temp_reg, rt_reg, rs_reg);
     end
 
-
-    // update_flags(temp_reg, zero, negative, overflow, zero, negative, overflow);
     update_flags(opcode, funct, temp_reg, regA, regB, zero, negative, overflow);
 end
 

@@ -55,8 +55,8 @@ begin
         6'b001000: begin // addi
             // For addi, sign extend the immediate and check for overflow
             // Assuming 'immediate' is 16 bits and needs to be sign-extended to 32 bits
-            extended_immediate = {{16{immediate[15]}}, immediate};
-            overflow_flag = ((regA[31] == extended_immediate[31]) && (result[31] != regA[31]))?1:0;
+            // extended_immediate = {{16{immediate[15]}}, immediate};
+            overflow_flag = ((regA[31] == immediate[31]) && (result[31] != regA[31]))?1:0;
             if (overflow_flag) begin
                 $display("overflow");
             end
@@ -233,33 +233,24 @@ always @(*) begin
     //slt
     if (opcode == 6'b000000 && funct == 6'b101010) begin
         temp_reg = ($signed(rs_reg) < $signed(rt_reg)) ? 1 : 0;
-        negative = temp_reg;
         $display("--slt--%d = %d < %d", temp_reg, rs_reg, rt_reg);
     end
 
     //slti
     if (opcode == 6'b001010) begin
         temp_reg = ($signed(rs_reg) < $signed(immediate)) ? 1 : 0;
-        if(rs_reg[31]==1&&immediate[31]==0)
-            negative = 1;
-        else if(rs_reg[31]==0&&immediate[31]==1)
-            negative = 0;
-        else
-            negative = (rs_reg<immediate)?1:0;
         $display("--slti--%d = %d - %d", temp_reg, rs_reg, immediate);
     end
 
     //sltiu
     if (opcode == 6'b001011) begin
         temp_reg = (rs_reg < immediate) ? 1 : 0;
-        negative = temp_reg;
         $display("--sltiu--%d = %d < %d", temp_reg, rs_reg, immediate);
     end
 
     //sltu
     if (opcode == 6'b000000 && funct == 6'b101011) begin
         temp_reg = (rs_reg < rt_reg) ? 1 : 0;
-        negative = temp_reg;
         $display("--sltu--%d = %d < %d", temp_reg, rs_reg, rt_reg);
     end
 

@@ -137,7 +137,7 @@ module MUX2_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, S);
-    function [31:0] Y_out; //todo
+    function [31:0] Y_out;
         input [31:0] A0;
         input [31:0] A1;
         input S;
@@ -150,8 +150,6 @@ module MUX2_BIT32 (
     endfunction
 endmodule
 
-
-
 module MUX3_BIT32 (
     input [31:0] A0,
     input [31:0] A1,
@@ -160,7 +158,7 @@ module MUX3_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, S);
-    function [31:0] Y_out; //todo
+    function [31:0] Y_out;
         input [31:0] A0;
         input [31:0] A1;
         input [31:0] A2;
@@ -175,7 +173,6 @@ module MUX3_BIT32 (
     endfunction
 endmodule
 
-
 module MUX4_BIT32 (
     input [31:0] A0,
     input [31:0] A1,
@@ -185,7 +182,7 @@ module MUX4_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, A3, S);
-    function [31:0] Y_out; //todo
+    function [31:0] Y_out;
         input [31:0] A0;
         input [31:0] A1;
         input [31:0] A2;
@@ -202,7 +199,6 @@ module MUX4_BIT32 (
     endfunction
 endmodule
 
-
 module MUX5_BIT32 (
     input [31:0] A0,
     input [31:0] A1,
@@ -213,7 +209,7 @@ module MUX5_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, A3, A4, S);
-    function [31:0] Y_out; //todo
+    function [31:0] Y_out;
         input [31:0] A0;
         input [31:0] A1;
         input [31:0] A2;
@@ -231,7 +227,6 @@ module MUX5_BIT32 (
         end
     endfunction
 endmodule
-
 
 
 // The instruction memory: fetch instruction based on PC
@@ -254,7 +249,7 @@ module INSTR_MEM (
         for (i = 0; i <= 512-1; i=i+1) begin
             RAM[i] = 32'b0;
         end
-        $readmemb("bin/instructions1.bin", RAM); // todo: change
+        $readmemb("CPU_instruction.bin", RAM);
     end
 
     // finish getting instr

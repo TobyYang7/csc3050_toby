@@ -40,7 +40,6 @@ module ID_EX (
     output reg [31:0] se_imme_out
 );
     always@(posedge CLOCK) begin
-         /* todo: Write your code here */
         RegWrite_out <= RegWrite_in;
         MemtoReg_out <= MemtoReg_in;
         MemWrite_out <= MemWrite_in;
@@ -83,7 +82,8 @@ module ALU (
         neg = 0;
         result_out = 0;
 
-        //todo
+        //todo: ALU
+
         //add
         if (Opcode == 6'b000000 && Funct == 6'b100000) begin
             result_out = SrcA + SrcB;
@@ -106,7 +106,7 @@ module ALU (
         end
         //addi
         if (Opcode == 6'b001000) begin
-            result_out = SrcA + SrcB;
+            result_out = SrcA + {{24{SrcB[15]}}, SrcB[15:0]};
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -116,7 +116,7 @@ module ALU (
         end
         //addiu
         if (Opcode == 6'b001001) begin
-            result_out = SrcA + SrcB;
+            result_out = SrcA + {{24{SrcB[15]}}, SrcB[15:0]};
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -153,7 +153,7 @@ module ALU (
         end
         //addi
         if (Opcode == 6'b001100) begin
-            result_out = SrcA & SrcB;
+            result_out = SrcA & {{24{SrcB[15]}}, SrcB[15:0]};
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -174,7 +174,7 @@ module ALU (
         end
         //ori
         if (Opcode == 6'b001101) begin
-            result_out = SrcA | SrcB;
+            result_out = SrcA | {{24{SrcB[15]}}, SrcB[15:0]};
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -188,7 +188,7 @@ module ALU (
         end
         //xori
         if (Opcode == 6'b001110) begin
-            result_out = SrcA ^ SrcB;
+            result_out = SrcA ^ {{24{SrcB[15]}}, SrcB[15:0]};
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -261,7 +261,6 @@ module ALU (
         if (Opcode == 6'b101011) begin
             result_out = SrcA + SrcB;
         end
-        //todo: jump
 
     end
     endfunction

@@ -9,16 +9,17 @@ module IF_ID (
     output reg [31:0] PC_add4_out
 );  
 always @(posedge CLOCK) begin
-    if (Stall != 1'b1 && Flush == 1'b0) begin // todo
+    if (Stall != 1'b1 && Flush == 1'b0) begin
         // When not stalling or flushing, transfer input to output
         inst_out <= inst_in;
         PC_add4_out <= PC_add4_in;
     end
-    if (Flush == 1'b1) begin // todo
-        // When flushing, reset the output to a known state (e.g., zero)
+    if (Flush == 1'b1) begin
+        // When flushing, reset the output to a known state
         inst_out <= 32'b0;
         PC_add4_out <= 32'b0;
     end
+
 end
 
 
@@ -40,7 +41,6 @@ module CONTROL_UNIT (
     output wire ALUSrc_out,
     output wire RegDst_out
 );
-    // todo: type
     // R-type
     wire R_add = (opcode_in == 6'b000000 && funct_in == 6'b100000) ? 1 : 0;
     wire R_addu = (opcode_in == 6'b000000 && funct_in == 6'b100001) ? 1 : 0;

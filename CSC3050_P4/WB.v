@@ -17,7 +17,7 @@ module MEM_WB (
     output reg [31:0] ReadData_out,
     output reg [4:0] WriteReg_out
 );
-    always@(posedge CLOCK) begin //todo
+    always@(posedge CLOCK) begin
         RegWrite_out <= RegWrite_in;
         MemtoReg_out <= MemtoReg_in;
         ALUOut_out <= ALUOut_in;

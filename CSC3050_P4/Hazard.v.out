@@ -1,0 +1,191 @@
+#! /opt/homebrew/Cellar/icarus-verilog/12.0/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/system.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/vhdl_sys.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/vhdl_textio.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/v2005_math.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/va_math.vpi";
+S_0x13e11c5a0 .scope module, "HAZARD_UNIT" "HAZARD_UNIT" 2 2;
+ .timescale 0 0;
+    .port_info 0 /INPUT 6 "Opcode_D";
+    .port_info 1 /INPUT 6 "Funct_D";
+    .port_info 2 /INPUT 3 "PC_Src_S";
+    .port_info 3 /INPUT 1 "RegWrite_E";
+    .port_info 4 /INPUT 1 "RegWrite_M";
+    .port_info 5 /INPUT 1 "RegWrite_W";
+    .port_info 6 /INPUT 1 "MemtoReg_E";
+    .port_info 7 /INPUT 1 "MemtoReg_M";
+    .port_info 8 /INPUT 1 "MemtoReg_W";
+    .port_info 9 /INPUT 5 "WriteReg_E";
+    .port_info 10 /INPUT 5 "WriteReg_M";
+    .port_info 11 /INPUT 5 "WriteReg_W";
+    .port_info 12 /INPUT 5 "Rs_E";
+    .port_info 13 /INPUT 5 "Rt_E";
+    .port_info 14 /OUTPUT 2 "ForwardA_E";
+    .port_info 15 /OUTPUT 2 "ForwardB_E";
+    .port_info 16 /INPUT 5 "Rs_D";
+    .port_info 17 /INPUT 5 "Rt_D";
+    .port_info 18 /OUTPUT 1 "Stall_F";
+    .port_info 19 /OUTPUT 1 "Stall_D";
+    .port_info 20 /OUTPUT 1 "Flush_E";
+    .port_info 21 /OUTPUT 1 "Flush_D";
+    .port_info 22 /OUTPUT 1 "waiting";
+L_0x13e12f460 .functor OR 2, L_0x13e12f1a0, L_0x13e12f2c0, C4<00>, C4<00>;
+L_0x13e12fe00 .functor BUFZ 1, L_0x13e12fc10, C4<0>, C4<0>, C4<0>;
+L_0x13e12fe70 .functor BUFZ 1, L_0x13e12fe00, C4<0>, C4<0>, C4<0>;
+v0x13e12cc10_0 .net "Flush_D", 0 0, L_0x13e12f090;  1 drivers
+v0x13e12ccc0_0 .net "Flush_E", 0 0, L_0x13e12fc10;  1 drivers
+v0x13e12cd60_0 .net "ForwardA_E", 1 0, L_0x13e12f8c0;  1 drivers
+v0x13e12cdf0_0 .net "ForwardB_E", 1 0, L_0x13e12f9c0;  1 drivers
+o0x130018580 .functor BUFZ 6, C4<zzzzzz>; HiZ drive
+v0x13e12ce90_0 .net "Funct_D", 5 0, o0x130018580;  0 drivers
+o0x1300185b0 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12cf80_0 .net "MemtoReg_E", 0 0, o0x1300185b0;  0 drivers
+o0x1300185e0 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12d020_0 .net "MemtoReg_M", 0 0, o0x1300185e0;  0 drivers
+o0x130018610 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12d0c0_0 .net "MemtoReg_W", 0 0, o0x130018610;  0 drivers
+o0x130018640 .functor BUFZ 6, C4<zzzzzz>; HiZ drive
+v0x13e12d160_0 .net "Opcode_D", 5 0, o0x130018640;  0 drivers
+o0x130018670 .functor BUFZ 3, C4<zzz>; HiZ drive
+v0x13e12d270_0 .net "PC_Src_S", 2 0, o0x130018670;  0 drivers
+o0x1300186a0 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12d320_0 .net "RegWrite_E", 0 0, o0x1300186a0;  0 drivers
+o0x1300186d0 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12d3c0_0 .net "RegWrite_M", 0 0, o0x1300186d0;  0 drivers
+o0x130018700 .functor BUFZ 1, C4<z>; HiZ drive
+v0x13e12d460_0 .net "RegWrite_W", 0 0, o0x130018700;  0 drivers
+o0x130018730 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12d500_0 .net "Rs_D", 4 0, o0x130018730;  0 drivers
+o0x130018760 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12d5b0_0 .net "Rs_E", 4 0, o0x130018760;  0 drivers
+o0x130018790 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12d660_0 .net "Rt_D", 4 0, o0x130018790;  0 drivers
+o0x1300187c0 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12d710_0 .net "Rt_E", 4 0, o0x1300187c0;  0 drivers
+v0x13e12d8a0_0 .net "Stall_D", 0 0, L_0x13e12fe70;  1 drivers
+v0x13e12d930_0 .net "Stall_F", 0 0, L_0x13e12fe00;  1 drivers
+o0x130018850 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12d9c0_0 .net "WriteReg_E", 4 0, o0x130018850;  0 drivers
+o0x130018880 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12da70_0 .net "WriteReg_M", 4 0, o0x130018880;  0 drivers
+o0x1300188b0 .functor BUFZ 5, C4<zzzzz>; HiZ drive
+v0x13e12db20_0 .net "WriteReg_W", 4 0, o0x1300188b0;  0 drivers
+L_0x1300500a0 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0x13e12dbd0_0 .net/2s *"_ivl_10", 1 0, L_0x1300500a0;  1 drivers
+v0x13e12dc80_0 .net *"_ivl_12", 1 0, L_0x13e12ef10;  1 drivers
+v0x13e12dd30_0 .net *"_ivl_16", 1 0, L_0x13e12f1a0;  1 drivers
+L_0x1300500e8 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+v0x13e12dde0_0 .net *"_ivl_19", 0 0, L_0x1300500e8;  1 drivers
+v0x13e12de90_0 .net *"_ivl_20", 1 0, L_0x13e12f2c0;  1 drivers
+L_0x130050130 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+v0x13e12df40_0 .net *"_ivl_23", 0 0, L_0x130050130;  1 drivers
+v0x13e12dff0_0 .net *"_ivl_24", 1 0, L_0x13e12f460;  1 drivers
+L_0x130050178 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0x13e12e0a0_0 .net/2u *"_ivl_26", 1 0, L_0x130050178;  1 drivers
+v0x13e12e150_0 .net *"_ivl_28", 0 0, L_0x13e12f550;  1 drivers
+L_0x1300501c0 .functor BUFT 1, C4<01>, C4<0>, C4<0>, C4<0>;
+v0x13e12e1f0_0 .net/2s *"_ivl_30", 1 0, L_0x1300501c0;  1 drivers
+L_0x130050208 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0x13e12e2a0_0 .net/2s *"_ivl_32", 1 0, L_0x130050208;  1 drivers
+v0x13e12d7c0_0 .net *"_ivl_34", 1 0, L_0x13e12f670;  1 drivers
+L_0x130050010 .functor BUFT 1, C4<000>, C4<0>, C4<0>, C4<0>;
+v0x13e12e530_0 .net/2u *"_ivl_4", 2 0, L_0x130050010;  1 drivers
+v0x13e12e5c0_0 .net *"_ivl_6", 0 0, L_0x13e12edf0;  1 drivers
+L_0x130050058 .functor BUFT 1, C4<01>, C4<0>, C4<0>, C4<0>;
+v0x13e12e650_0 .net/2s *"_ivl_8", 1 0, L_0x130050058;  1 drivers
+v0x13e12e700_0 .net "waiting", 0 0, L_0x13e12f7e0;  1 drivers
+v0x13e12e7a0_0 .net "waiting_for_A", 0 0, L_0x13e12eb10;  1 drivers
+v0x13e12e840_0 .net "waiting_for_B", 0 0, L_0x13e12ebb0;  1 drivers
+L_0x13e12eb10 .ufunc/vec4 TD_HAZARD_UNIT.Forward_D, 1, o0x1300186a0, o0x1300186d0, o0x130018700, o0x130018850, o0x130018880, o0x1300188b0, o0x130018730 (v0x13e12b810_0, v0x13e12b8c0_0, v0x13e12b950_0, v0x13e12ba30_0, v0x13e12bae0_0, v0x13e12bb90_0, v0x13e12b770_0) S_0x13e11c2b0;
+L_0x13e12ebb0 .ufunc/vec4 TD_HAZARD_UNIT.Forward_D, 1, o0x1300186a0, o0x1300186d0, o0x130018700, o0x130018850, o0x130018880, o0x1300188b0, o0x130018790 (v0x13e12b810_0, v0x13e12b8c0_0, v0x13e12b950_0, v0x13e12ba30_0, v0x13e12bae0_0, v0x13e12bb90_0, v0x13e12b770_0) S_0x13e11c2b0;
+L_0x13e12edf0 .cmp/ne 3, o0x130018670, L_0x130050010;
+L_0x13e12ef10 .functor MUXZ 2, L_0x1300500a0, L_0x130050058, L_0x13e12edf0, C4<>;
+L_0x13e12f090 .part L_0x13e12ef10, 0, 1;
+L_0x13e12f1a0 .concat [ 1 1 0 0], L_0x13e12eb10, L_0x1300500e8;
+L_0x13e12f2c0 .concat [ 1 1 0 0], L_0x13e12ebb0, L_0x130050130;
+L_0x13e12f550 .cmp/ne 2, L_0x13e12f460, L_0x130050178;
+L_0x13e12f670 .functor MUXZ 2, L_0x130050208, L_0x1300501c0, L_0x13e12f550, C4<>;
+L_0x13e12f7e0 .part L_0x13e12f670, 0, 1;
+L_0x13e12f8c0 .ufunc/vec4 TD_HAZARD_UNIT.Forward_E, 2, o0x1300186d0, o0x130018700, o0x130018880, o0x1300188b0, o0x130018760 (v0x13e12bf50_0, v0x13e12c000_0, v0x13e12c0a0_0, v0x13e12c190_0, v0x13e12bea0_0) S_0x13e12bc40;
+L_0x13e12f9c0 .ufunc/vec4 TD_HAZARD_UNIT.Forward_E, 2, o0x1300186d0, o0x130018700, o0x130018880, o0x1300188b0, o0x1300187c0 (v0x13e12bf50_0, v0x13e12c000_0, v0x13e12c0a0_0, v0x13e12c190_0, v0x13e12bea0_0) S_0x13e12bc40;
+L_0x13e12fc10 .ufunc/vec4 TD_HAZARD_UNIT.Stall, 1, o0x130018640, o0x130018580, o0x1300185b0, o0x1300185e0, o0x130018610, o0x130018730, o0x130018790, o0x130018850, o0x130018880, o0x1300188b0 (v0x13e12c6a0_0, v0x13e12c400_0, v0x13e12c4b0_0, v0x13e12c550_0, v0x13e12c600_0, v0x13e12c790_0, v0x13e12c840_0, v0x13e12c9a0_0, v0x13e12cab0_0, v0x13e12cb60_0) S_0x13e12c240;
+S_0x13e11c2b0 .scope function.vec4.s1, "Forward_D" "Forward_D" 2 82, 2 82 0, S_0x13e11c5a0;
+ .timescale 0 0;
+; Variable Forward_D is vec4 return value of scope S_0x13e11c2b0
+v0x13e12b770_0 .var "R_E", 4 0;
+v0x13e12b810_0 .var "RegWrite_E", 0 0;
+v0x13e12b8c0_0 .var "RegWrite_M", 0 0;
+v0x13e12b950_0 .var "RegWrite_W", 0 0;
+v0x13e12ba30_0 .var "WriteReg_E", 4 0;
+v0x13e12bae0_0 .var "WriteReg_M", 4 0;
+v0x13e12bb90_0 .var "WriteReg_W", 4 0;
+TD_HAZARD_UNIT.Forward_D ;
+    %pushi/vec4 0, 0, 1;
+    %ret/vec4 0, 0, 1;  Assign to Forward_D (store_vec4_to_lval)
+    %end;
+S_0x13e12bc40 .scope function.vec4.s2, "Forward_E" "Forward_E" 2 97, 2 97 0, S_0x13e11c5a0;
+ .timescale 0 0;
+; Variable Forward_E is vec4 return value of scope S_0x13e12bc40
+v0x13e12bea0_0 .var "R_E", 4 0;
+v0x13e12bf50_0 .var "RegWrite_M", 0 0;
+v0x13e12c000_0 .var "RegWrite_W", 0 0;
+v0x13e12c0a0_0 .var "WriteReg_M", 4 0;
+v0x13e12c190_0 .var "WriteReg_W", 4 0;
+TD_HAZARD_UNIT.Forward_E ;
+    %pushi/vec4 0, 0, 2;
+    %ret/vec4 0, 0, 2;  Assign to Forward_E (store_vec4_to_lval)
+    %end;
+S_0x13e12c240 .scope function.vec4.s1, "Stall" "Stall" 2 110, 2 110 0, S_0x13e11c5a0;
+ .timescale 0 0;
+v0x13e12c400_0 .var "Funct_D", 5 0;
+v0x13e12c4b0_0 .var "MemtoReg_E", 0 0;
+v0x13e12c550_0 .var "MemtoReg_M", 0 0;
+v0x13e12c600_0 .var "MemtoReg_W", 0 0;
+v0x13e12c6a0_0 .var "Opcode_D", 5 0;
+v0x13e12c790_0 .var "Rs_D", 4 0;
+v0x13e12c840_0 .var "Rt_D", 4 0;
+; Variable Stall is vec4 return value of scope S_0x13e12c240
+v0x13e12c9a0_0 .var "WriteReg_E", 4 0;
+v0x13e12cab0_0 .var "WriteReg_M", 4 0;
+v0x13e12cb60_0 .var "WriteReg_W", 4 0;
+TD_HAZARD_UNIT.Stall ;
+    %load/vec4 v0x13e12c6a0_0;
+    %cmpi/e 0, 0, 6;
+    %flag_get/vec4 4;
+    %jmp/0 T_2.2, 4;
+    %load/vec4 v0x13e12c400_0;
+    %pushi/vec4 8, 0, 6;
+    %cmp/e;
+    %flag_get/vec4 4;
+    %and;
+T_2.2;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_2.0, 8;
+    %pushi/vec4 0, 0, 1;
+    %ret/vec4 0, 0, 1;  Assign to Stall (store_vec4_to_lval)
+    %jmp T_2.1;
+T_2.0 ;
+    %load/vec4 v0x13e12c6a0_0;
+    %cmpi/e 4, 0, 6;
+    %jmp/1 T_2.5, 4;
+    %flag_mov 8, 4;
+    %load/vec4 v0x13e12c6a0_0;
+    %cmpi/e 5, 0, 6;
+    %flag_or 4, 8;
+T_2.5;
+    %jmp/0xz  T_2.3, 4;
+    %pushi/vec4 0, 0, 1;
+    %ret/vec4 0, 0, 1;  Assign to Stall (store_vec4_to_lval)
+T_2.3 ;
+T_2.1 ;
+    %pushi/vec4 0, 0, 1;
+    %ret/vec4 0, 0, 1;  Assign to Stall (store_vec4_to_lval)
+    %end;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "Hazard.v";

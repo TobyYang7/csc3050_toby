@@ -25,11 +25,18 @@ module EX_MEM (
     output reg [31:0] WriteData_out,
     output reg [4:0] WriteReg_out
 );
-    always@(posedge CLOCK) begin
-        /* todo: Write your code here */
-
+    always@(posedge CLOCK) begin //todo
+        RegWrite_out <= RegWrite_in;
+        MemtoReg_out <= MemtoReg_in;
+        MemWrite_out <= MemWrite_in;
+        ALUZero_out <= ALUZero_in;
+        ALUNeg_out <= ALUNeg_in;
+        ALUOut_out <= ALUOut_in;
+        WriteData_out <= WriteData_in;
+        WriteReg_out <= WriteReg_in;
     end
 endmodule
+
 
 
 

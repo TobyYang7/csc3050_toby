@@ -137,8 +137,16 @@ module MUX2_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, S);
-    function [31:0] Y_out;
-        /* todo: Write your code here */
+    function [31:0] Y_out; //todo
+        input [31:0] A0;
+        input [31:0] A1;
+        input S;
+        begin
+            case(S)
+                1'b0: Y_out = A0;
+                1'b1: Y_out = A1;
+            endcase
+        end
     endfunction
 endmodule
 
@@ -152,8 +160,18 @@ module MUX3_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, S);
-    function [31:0] Y_out;
-        /* todo: Write your code here */ 
+    function [31:0] Y_out; //todo
+        input [31:0] A0;
+        input [31:0] A1;
+        input [31:0] A2;
+        input [1:0] S;
+        begin
+            case(S)
+            2'b00: Y_out = A0;
+            2'b01: Y_out = A1;
+            2'b10: Y_out = A2;
+            endcase
+        end
     endfunction
 endmodule
 
@@ -167,8 +185,20 @@ module MUX4_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, A3, S);
-    function [31:0] Y_out;
-        /* todo: Write your code here */
+    function [31:0] Y_out; //todo
+        input [31:0] A0;
+        input [31:0] A1;
+        input [31:0] A2;
+        input [31:0] A3;
+        input [1:0] S;
+        begin
+            case(S)
+            2'b00: Y_out = A0;
+            2'b01: Y_out = A1;
+            2'b10: Y_out = A2;
+            2'b11: Y_out = A3;
+            endcase
+        end
     endfunction
 endmodule
 
@@ -183,8 +213,22 @@ module MUX5_BIT32 (
     output [31:0] Y
 );
     assign Y = Y_out(A0, A1, A2, A3, A4, S);
-    function [31:0] Y_out;
-        /* todo: Write your code here */
+    function [31:0] Y_out; //todo
+        input [31:0] A0;
+        input [31:0] A1;
+        input [31:0] A2;
+        input [31:0] A3;
+        input [31:0] A4;
+        input [2:0] S;
+        begin
+            case(S)
+            3'b000: Y_out = A0;
+            3'b001: Y_out = A1;
+            3'b010: Y_out = A2;
+            3'b011: Y_out = A3;
+            3'b100: Y_out = A4;
+            endcase
+        end
     endfunction
 endmodule
 
@@ -210,7 +254,7 @@ module INSTR_MEM (
         for (i = 0; i <= 512-1; i=i+1) begin
             RAM[i] = 32'b0;
         end
-        $readmemb("CPU_instruction.bin", RAM);
+        $readmemb("bin/instructions1.bin", RAM); // todo: change
     end
 
     // finish getting instr

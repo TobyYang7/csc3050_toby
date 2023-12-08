@@ -40,8 +40,21 @@ module ID_EX (
     output reg [31:0] se_imme_out
 );
     always@(posedge CLOCK) begin
-        /* Write your code here */
-
+         /* todo: Write your code here */
+        RegWrite_out <= RegWrite_in;
+        MemtoReg_out <= MemtoReg_in;
+        MemWrite_out <= MemWrite_in;
+        Opcode_out <= Opcode_in;
+        Funct_out <= Funct_in;
+        ALUSrc_out <= ALUSrc_in;
+        RegDst_out <= RegDst_in;
+        regA_data_out <= regA_data_in;
+        regB_data_out <= regB_data_in;
+        Rs_out <= Rs_in;
+        Rt_out <= Rt_in;
+        Rd_out <= Rd_in;
+        Sa_out <= Sa_in;
+        se_imme_out <= se_imme_in;
     end
 endmodule
 
@@ -70,9 +83,186 @@ module ALU (
         neg = 0;
         result_out = 0;
 
-        // you should implement the functionality of ALU,
-        // which can refers to your project3. 
-        /* Write your code here */
+        //todo
+        //add
+        if (Opcode == 6'b000000 && Funct == 6'b100000) begin
+            result_out = SrcA + SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //addu
+        if (Opcode == 6'b000000 && Funct == 6'b100001) begin
+            result_out = SrcA + SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //addi
+        if (Opcode == 6'b001000) begin
+            result_out = SrcA + SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //addiu
+        if (Opcode == 6'b001001) begin
+            result_out = SrcA + SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //sub
+        if (Opcode == 6'b000000 && Funct == 6'b100010) begin
+            result_out = SrcA - SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //subu
+        if (Opcode == 6'b000000 && Funct == 6'b100011) begin
+            result_out = SrcA - SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+            if (result_out < 0) begin
+                neg = 1;
+            end
+        end
+        //and
+        if (Opcode == 6'b000000 && Funct == 6'b100100) begin
+            result_out = SrcA & SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //addi
+        if (Opcode == 6'b001100) begin
+            result_out = SrcA & SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //nor
+        if (Opcode == 6'b000000 && Funct == 6'b100111) begin
+            result_out = ~(SrcA | SrcB);
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //or
+        if (Opcode == 6'b000000 && Funct == 6'b100101) begin
+            result_out = SrcA | SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //ori
+        if (Opcode == 6'b001101) begin
+            result_out = SrcA | SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //xor
+        if (Opcode == 6'b000000 && Funct == 6'b100110) begin
+            result_out = SrcA ^ SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //xori
+        if (Opcode == 6'b001110) begin
+            result_out = SrcA ^ SrcB;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //sll
+        if (Opcode == 6'b000000 && Funct == 6'b000000) begin
+            result_out = SrcB << SrcC;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //sllv
+        if (Opcode == 6'b000000 && Funct == 6'b000100) begin
+            result_out = SrcB << SrcA;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //srl
+        if (Opcode == 6'b000000 && Funct == 6'b000010) begin
+            result_out = SrcB >> SrcC;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //srlv
+        if (Opcode == 6'b000000 && Funct == 6'b000110) begin
+            result_out = SrcB >> SrcA;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //sra
+        if (Opcode == 6'b000000 && Funct == 6'b000011) begin
+            result_out = SrcB >>> SrcC;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //srav
+        if (Opcode == 6'b000000 && Funct == 6'b000111) begin
+            result_out = SrcB >>> SrcA;
+            if (result_out == 0) begin
+                zero = 1;
+            end
+        end
+        //beq
+        if (Opcode == 6'b000100) begin
+            if (SrcA == SrcB) begin
+                result_out = 1;
+            end
+        end
+        //bne
+        if (Opcode == 6'b000101) begin
+            if (SrcA != SrcB) begin
+                result_out = 1;
+            end
+        end
+        //slt
+        if (Opcode == 6'b000000 && Funct == 6'b101010) begin
+            if (SrcA < SrcB) begin
+                result_out = 1;
+            end
+        end
+        //lw
+        if (Opcode == 6'b100011) begin
+            result_out = SrcA + SrcB;
+        end
+        //sw
+        if (Opcode == 6'b101011) begin
+            result_out = SrcA + SrcB;
+        end
+        //todo: jump
+
     end
     endfunction
 endmodule

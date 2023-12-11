@@ -19,7 +19,7 @@ addi $s0, $zero, 200 # if j succeeds, this should be skipped
 addi $s1, $zero, 400 # if j succeeds, this should be skipped
 addi $s2, $zero, 800 # if j succeeds, this should be skipped
                     # j makes pc moves to here
-addi $a0, $zero, -2 # $a0 shoule be -2
+addi $a0, $zero, -2 # $a0 shoule be -2 ------17
 addi $a1, $zero, -4 # $a1 should be -4
 addi $a2, $zero, -8 # $a2 should be -8
 jr $v0
@@ -27,12 +27,12 @@ addi $s3, $zero, 160 # if jr succeeds, this should be skipped
 addi $s4, $zero, 320 # if jr succeeds, this should be skipped
 addi $s5, $zero, 640 # if jr succeeds, this should be skipped
                     # jr makes pc moves to here
-addi $t0, $zero, -16 # $t0 shoule be -16
+addi $t0, $zero, -16 # $t0 shoule be -16 -------24
 addi $t1, $zero, -32 # $t1 should be -32
 addi $t2, $zero, -64 # $t2 should be -64
 jal 32
                       #jr jumps back to here
-addi $t3, $zero, 128  # $t3 shoule be 128
+addi $t3, $zero, 128  # $t3 shoule be 128 -------28
 addi $t4, $zero, 256  # $t3 shoule be 256
 addi $t5, $zero, 512  # $t3 shoule be 512
 j 36
@@ -41,7 +41,7 @@ addi $k0, $zero, 1 # meaningless instruction, just to avoid other hazards
 addi $k0, $zero, 1 # meaningless instruction, just to avoid other hazards
 jr $ra  # jal jumps to here
                   # j jumps to here
-sw $a0, 0($zero)  # -2 in DATA_MEM[0]
+sw $a0, 0($zero)  # -2 in DATA_MEM[0] --------36
 sw $a1, 4($zero)  # -4 in DATA_MEM[1]
 sw $a2, 8($zero)  # -8 in DATA_MEM[2]
 sw $t0, 12($zero) # -16 in DATA_MEM[3]

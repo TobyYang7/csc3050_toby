@@ -87,15 +87,19 @@ module HAZARD_UNIT (
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
         input [4:0] R_E;
-        begin 
+        begin //todo
             if (RegWrite_E && WriteReg_E == R_E) begin
                 Forward_D = 1'b1;
+                // $display("Forward_D = 1'b1");
             end else if (RegWrite_M && WriteReg_M == R_E) begin
                 Forward_D = 1'b1;
+                // $display("Forward_D = 1'b1");
             end else if (RegWrite_W && WriteReg_W == R_E) begin
                 Forward_D = 1'b1;
+                // $display("Forward_D = 1'b1");
             end else begin
                 Forward_D = 1'b0;
+                // $display("Forward_D = 1'b0");
             end
         end
     endfunction
@@ -106,13 +110,16 @@ module HAZARD_UNIT (
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
         input [4:0] R_E;
-        begin
+        begin //todo
             if (RegWrite_M && WriteReg_M == R_E) begin
                 Forward_E = 2'b10;
+                // $display("Forward_E = 2'b10");
             end else if (RegWrite_W && WriteReg_W == R_E) begin
                 Forward_E = 2'b01;
+                // $display("Forward_E = 2'b01");
             end else begin
                 Forward_E = 2'b00;
+                // $display("Forward_E = 2'b00");
             end
         end
     endfunction
@@ -128,13 +135,16 @@ module HAZARD_UNIT (
         input [4:0] WriteReg_E;
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
-        begin 
+        begin //todo
             if ((Opcode_D == 6'b000000 && Funct_D == 6'b001000) || Opcode_D == 6'b000100 || Opcode_D == 6'b000101) begin
                 Stall = 1'b0;
+                // $display("Stall = 1'b0");
             end else if ((MemtoReg_E && (WriteReg_E == Rs_D || WriteReg_E == Rt_D)) || (MemtoReg_M && (WriteReg_M == Rs_D || WriteReg_M == Rt_D)) || (MemtoReg_W && (WriteReg_W == Rs_D || WriteReg_W == Rt_D))) begin
                 Stall = 1'b1;
+                // $display("Stall = 1'b1");
             end else begin
                 Stall = 1'b0;
+                // $display("Stall = 1'b0");
             end
         end
     endfunction

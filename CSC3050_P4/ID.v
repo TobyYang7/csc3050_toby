@@ -138,8 +138,9 @@ module REG_FILE (
     end
 
     always@(Jump_D, Opcode_D) begin
-        if (Jump_D == 1'b1 && Opcode_D == 6'b000011)
+        if (Jump_D == 1'b1 && Opcode_D == 6'b000011) // jal
         begin
+            // $display("jal %d", PC_pre);
             simu_register[31] <= PC_pre;
         end
     end

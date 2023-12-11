@@ -56,10 +56,16 @@ module PC_SRC (
         input [5:0] Funct;
         input waiting;
     begin
-        if (Branch == 1'b1) begin
+        if (Branch == 1'b1) begin // branch
             if ((Opcode == 6'b000100 && regA_val == regB_val)
-                || (Opcode == 6'b000101 && regA_val != regB_val))
+                || (Opcode == 6'b000101 && regA_val != regB_val)) // beq, bne
             begin
+                if (Opcode == 6'b000100) begin
+                    $display("beq");
+                end
+                if (Opcode == 6'b000101) begin
+                    $display("bne");
+                end
                 if (waiting == 0) begin
                     bj_S = 3'b001;        
                 end
@@ -71,10 +77,16 @@ module PC_SRC (
                 bj_S = 3'b000;
             end
         end
-        else if (Jump == 1'b1) begin
+        else if (Jump == 1'b1) begin // jump
             if ((Opcode == 6'b000010 )
-                | (Opcode == 6'b000011 ))
+                | (Opcode == 6'b000011 )) // j, jal
             begin
+                if(Opcode == 6'b000011) begin
+                    $display("jal");
+                end
+                if(Opcode == 6'b000010) begin
+                    $display("j");
+                end
                 if (waiting == 0) begin
                     bj_S = 3'b010;        
                 end
@@ -82,8 +94,9 @@ module PC_SRC (
                     bj_S = 3'b100;
                 end
             end
-            else if (Opcode == 6'b000000)
+            else if (Opcode == 6'b000000) // jr
             begin
+                $display("jr");
                 if (waiting == 0) begin
                     bj_S = 3'b011;        
                 end
@@ -95,7 +108,7 @@ module PC_SRC (
                 bj_S = 3'b000;
             end
         end
-        else if (Branch == 1'b0 && Jump == 1'b0) begin
+        else if (Branch == 1'b0 && Jump == 1'b0) begin // normal
             bj_S = 3'b000;
         end
         else begin

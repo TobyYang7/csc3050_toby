@@ -62,7 +62,7 @@ endmodule
 module ALU (
     input [31:0] SrcA,
     input [31:0] SrcB,
-    input [4:0] SrcC,
+    input [4:0] SrcC, // for shift
     input [5:0] Opcode,
     input [5:0] Funct,
     output [31:0] result,
@@ -82,6 +82,8 @@ module ALU (
         neg = 0;
         result_out = 0;
 
+        // $display("------------\nA  : %b\nB  : %b", SrcA, SrcB);
+
         //todo: ALU
 
         //add
@@ -93,10 +95,11 @@ module ALU (
             if (result_out < 0) begin
                 neg = 1;
             end
+            // $display("A  : %b\nB  : %b\nC  :%d\nRES: %b\n", SrcA, SrcB, SrcC, result_out);
         end
         //addu
         if (Opcode == 6'b000000 && Funct == 6'b100001) begin
-            result_out = SrcA + SrcB;
+            result_out = $unsigned(SrcA) + $unsigned(SrcB);
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -106,23 +109,25 @@ module ALU (
         end
         //addi
         if (Opcode == 6'b001000) begin
-            result_out = SrcA + {{24{SrcB[15]}}, SrcB[15:0]};
+            result_out = SrcA + $signed({{16{SrcB[15]}}, SrcB[15:0]});
             if (result_out == 0) begin
                 zero = 1;
             end
             if (result_out < 0) begin
                 neg = 1;
             end
+            $display("addi\nA  : %d\nB  : %d\nC  :%d\nRES: %d\n", $signed(SrcA), $signed({{16{SrcB[15]}}, SrcB[15:0]}), SrcC, $signed(result_out));
         end
         //addiu
         if (Opcode == 6'b001001) begin
-            result_out = SrcA + {{24{SrcB[15]}}, SrcB[15:0]};
+            result_out = $unsigned(SrcA) + $signed({{16{SrcB[15]}}, SrcB[15:0]});
             if (result_out == 0) begin
                 zero = 1;
             end
             if (result_out < 0) begin
                 neg = 1;
             end
+            // $display("addiu\nA  : %b\nB  : %b\nC  :%d\nRES: %b\n", SrcA, SrcB, SrcC, result_out);
         end
         //sub
         if (Opcode == 6'b000000 && Funct == 6'b100010) begin
@@ -133,6 +138,7 @@ module ALU (
             if (result_out < 0) begin
                 neg = 1;
             end
+            // $display("sub\nA  : %b\nB  : %b\nC  :%d\nRES: %b\n", SrcA, SrcB, SrcC, result_out);
         end
         //subu
         if (Opcode == 6'b000000 && Funct == 6'b100011) begin
@@ -151,9 +157,9 @@ module ALU (
                 zero = 1;
             end
         end
-        //addi
+        //andi
         if (Opcode == 6'b001100) begin
-            result_out = SrcA & {{24{SrcB[15]}}, SrcB[15:0]};
+            result_out = SrcA & SrcB;
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -188,7 +194,7 @@ module ALU (
         end
         //xori
         if (Opcode == 6'b001110) begin
-            result_out = SrcA ^ {{24{SrcB[15]}}, SrcB[15:0]};
+            result_out = $signed(SrcA) ^ SrcB[15:0];
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -223,14 +229,14 @@ module ALU (
         end
         //sra
         if (Opcode == 6'b000000 && Funct == 6'b000011) begin
-            result_out = SrcB >>> SrcC;
+            result_out = $signed(SrcB) >>> SrcC;
             if (result_out == 0) begin
                 zero = 1;
             end
         end
         //srav
         if (Opcode == 6'b000000 && Funct == 6'b000111) begin
-            result_out = SrcB >>> SrcA;
+            result_out = $signed(SrcB) >>> $signed(SrcA);
             if (result_out == 0) begin
                 zero = 1;
             end
@@ -249,7 +255,7 @@ module ALU (
         end
         //slt
         if (Opcode == 6'b000000 && Funct == 6'b101010) begin
-            if (SrcA < SrcB) begin
+            if ($signed(SrcA) < $signed(SrcB)) begin
                 result_out = 1;
             end
         end
@@ -259,8 +265,10 @@ module ALU (
         end
         //sw
         if (Opcode == 6'b101011) begin
-            result_out = SrcA + SrcB;
+            result_out = SrcA + $signed({{16{SrcB[15]}}, SrcB[15:0]});
         end
+
+        // $display("res: %b", result_out);
 
     end
     endfunction

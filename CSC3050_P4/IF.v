@@ -61,10 +61,10 @@ module PC_SRC (
                 || (Opcode == 6'b000101 && regA_val != regB_val)) // beq, bne
             begin
                 if (Opcode == 6'b000100) begin
-                    $display("beq");
+                    // $display("beq");
                 end
                 if (Opcode == 6'b000101) begin
-                    $display("bne");
+                    // $display("bne");
                 end
                 if (waiting == 0) begin
                     bj_S = 3'b001;        
@@ -82,10 +82,10 @@ module PC_SRC (
                 | (Opcode == 6'b000011 )) // j, jal
             begin
                 if(Opcode == 6'b000011) begin
-                    $display("jal");
+                    // $display("jal");
                 end
                 if(Opcode == 6'b000010) begin
-                    $display("j");
+                    // $display("j");
                 end
                 if (waiting == 0) begin
                     bj_S = 3'b010;        
@@ -96,9 +96,9 @@ module PC_SRC (
             end
             else if (Opcode == 6'b000000) // jr
             begin
-                $display("jr");
+                // $display("jr");
                 if (waiting == 0) begin
-                    bj_S = 3'b011;        
+                    bj_S = 3'b011;
                 end
                 else if (waiting == 1) begin
                     bj_S = 3'b100;

@@ -5,6 +5,12 @@ module cpu_test ();
     reg clock;
     parameter time_period = 10;
 
+    // VCD dump settings
+    initial begin
+        $dumpfile("cpu_test.vcd");
+        $dumpvars(0, cpu_test);
+    end
+
     // DUT instantiation
     CPU testedCPU(
         .CLK(clock)

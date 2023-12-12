@@ -109,36 +109,36 @@ module ALU (
         end
         //addi
         if (Opcode == 6'b001000) begin
-            result_out = SrcA + $signed({{16{SrcB[15]}}, SrcB[15:0]});
+            result_out = $signed(SrcA) + $signed({{16{SrcB[15]}}, SrcB[15:0]});
             if (result_out == 0) begin
                 zero = 1;
             end
             if (result_out < 0) begin
                 neg = 1;
             end
-            $display("addi\nA  : %d\nB  : %d\nC  :%d\nRES: %d\n", $signed(SrcA), $signed({{16{SrcB[15]}}, SrcB[15:0]}), SrcC, $signed(result_out));
+            // $display("addi\nA  : %d\nB  : %d\nC  :%d\nRES: %d\n", $signed(SrcA), $signed({{16{SrcB[15]}}, SrcB[15:0]}), SrcC, $signed(result_out));
         end
         //addiu
         if (Opcode == 6'b001001) begin
-            result_out = $unsigned(SrcA) + $signed({{16{SrcB[15]}}, SrcB[15:0]});
+            result_out = $signed(SrcA) + $unsigned({{16{SrcB[15]}}, SrcB[15:0]});
             if (result_out == 0) begin
                 zero = 1;
             end
             if (result_out < 0) begin
                 neg = 1;
             end
-            // $display("addiu\nA  : %b\nB  : %b\nC  :%d\nRES: %b\n", SrcA, SrcB, SrcC, result_out);
+            // $display("addiu\nA  : %b\nB  : %b\nC  :%d\nRES: %d\n", SrcA, SrcB, SrcC, result_out);
         end
         //sub
         if (Opcode == 6'b000000 && Funct == 6'b100010) begin
-            result_out = SrcA - SrcB;
+            result_out = $signed(SrcA) - $signed(SrcB);
             if (result_out == 0) begin
                 zero = 1;
             end
             if (result_out < 0) begin
                 neg = 1;
             end
-            // $display("sub\nA  : %b\nB  : %b\nC  :%d\nRES: %b\n", SrcA, SrcB, SrcC, result_out);
+            // $display("sub\nA  : %d\nB  : %d\nC  :%d\nRES: %d\n", SrcA, $signed(SrcB), SrcC, $signed(result_out));
         end
         //subu
         if (Opcode == 6'b000000 && Funct == 6'b100011) begin
@@ -261,7 +261,7 @@ module ALU (
         end
         //lw
         if (Opcode == 6'b100011) begin
-            result_out = SrcA + SrcB;
+            result_out = SrcA + $signed({{16{SrcB[15]}}, SrcB[15:0]});
         end
         //sw
         if (Opcode == 6'b101011) begin

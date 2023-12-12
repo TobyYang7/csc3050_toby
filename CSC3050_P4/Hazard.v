@@ -79,7 +79,7 @@ module HAZARD_UNIT (
     assign Stall_F = Flush_E;
     assign Stall_D = Stall_F;
 
-    function [1-1:0] Forward_D;
+    function [1-1:0] Forward_D; //rt
         input RegWrite_E;
         input RegWrite_M;
         input RegWrite_W;
@@ -87,39 +87,30 @@ module HAZARD_UNIT (
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
         input [4:0] R_E;
-        begin //todo
-            if (RegWrite_E && WriteReg_E == R_E) begin
+        begin
+            if ((RegWrite_E && WriteReg_E == R_E && (WriteReg_E != 0)) ||
+                (RegWrite_M && WriteReg_M == R_E && (WriteReg_M != 0)) ||
+                (RegWrite_W && WriteReg_W == R_E && (WriteReg_W != 0))) begin
                 Forward_D = 1'b1;
-                // $display("Forward_D = 1'b1");
-            end else if (RegWrite_M && WriteReg_M == R_E) begin
-                Forward_D = 1'b1;
-                // $display("Forward_D = 1'b1");
-            end else if (RegWrite_W && WriteReg_W == R_E) begin
-                Forward_D = 1'b1;
-                // $display("Forward_D = 1'b1");
             end else begin
                 Forward_D = 1'b0;
-                // $display("Forward_D = 1'b0");
             end
         end
     endfunction
 
-    function [2-1:0] Forward_E;
+    function [2-1:0] Forward_E; //rs
         input RegWrite_M;
         input RegWrite_W;
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
         input [4:0] R_E;
-        begin //todo
-            if (RegWrite_M && WriteReg_M == R_E) begin
-                Forward_E = 2'b10;
-                // $display("Forward_E = 2'b10");
-            end else if (RegWrite_W && WriteReg_W == R_E) begin
+        begin
+            if(RegWrite_M && (WriteReg_M != 0) && (WriteReg_M == R_E)) begin
                 Forward_E = 2'b01;
-                // $display("Forward_E = 2'b01");
+            end else if(RegWrite_W && (WriteReg_W != 0) && (WriteReg_W == R_E)) begin
+                Forward_E = 2'b10;
             end else begin
                 Forward_E = 2'b00;
-                // $display("Forward_E = 2'b00");
             end
         end
     endfunction
@@ -135,16 +126,18 @@ module HAZARD_UNIT (
         input [4:0] WriteReg_E;
         input [4:0] WriteReg_M;
         input [4:0] WriteReg_W;
-        begin //todo
-            if ((Opcode_D == 6'b000000 && Funct_D == 6'b001000) || Opcode_D == 6'b000100 || Opcode_D == 6'b000101) begin
+        begin
+            if (Opcode_D == 6'b000000 && Funct_D == 6'b001000) begin // jr
                 Stall = 1'b0;
-                // $display("Stall = 1'b0");
-            end else if ((MemtoReg_E && (WriteReg_E == Rs_D || WriteReg_E == Rt_D)) || (MemtoReg_M && (WriteReg_M == Rs_D || WriteReg_M == Rt_D)) || (MemtoReg_W && (WriteReg_W == Rs_D || WriteReg_W == Rt_D))) begin
+            end else if (Opcode_D == 6'b000100 || Opcode_D == 6'b000101) begin // beq, bne
+                Stall = 1'b0;
+            end else if ((MemtoReg_E && (WriteReg_E == Rs_D || WriteReg_E == Rt_D)) ||
+                        (MemtoReg_M && (WriteReg_M == Rs_D || WriteReg_M == Rt_D)) ||
+                        (MemtoReg_W && (WriteReg_W == Rs_D || WriteReg_W == Rt_D))) begin
+
                 Stall = 1'b1;
-                // $display("Stall = 1'b1");
             end else begin
-                Stall = 1'b0;
-                // $display("Stall = 1'b0");
+                Stall = 1'b0; // Default no stall
             end
         end
     endfunction
